@@ -1,0 +1,6 @@
+typeahead:
+  build: .
+  ports:
+    - "8080"
+    - "8500"
+    - "8400"

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging as level
 import sys
-from consul.std import Consul
-import asyncio
-import os
+from consul.aio import Consul
 from logging import Logger, StreamHandler
 
 from flask import Flask
@@ -12,7 +10,8 @@ from flask_restful import Api
 from flask_swagger import swagger
 
 import settings
-import typeahead_api, util
+import typeahead_api
+import util
 
 log = Logger(__name__)
 log.addHandler(StreamHandler(stream=sys.stdout))
@@ -25,7 +24,6 @@ consul_client = Consul(host=consul_host['host'],
                        port=consul_host['port'])
 consul_service = consul_client.agent.service
 service_id = util.register(consul_client, consul_service)
-
 
 log.info("Spawning awesomeness: Typeahead API")
 

@@ -2,7 +2,6 @@
   "bootstrap": true,
   "server": true,
   "ui": true,
-  "node_name": "typeahead-api",
   "bind_addr": "0.0.0.0",
   "client_addr": "0.0.0.0",
   "datacenter": "dev",

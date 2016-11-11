@@ -1,6 +1,9 @@
 typeahead:
+  environment:
+    CONSUL_DEFAULT_ENV: "dev"
+    CONSUL_ENV: "${CONSUL_ENV}"
   build: .
   ports:
-    - "8080"
-    - "8500"
-    - "8400"
+    - "8123:8080"
+    - "8501:8500"
+    - "8401:8400"

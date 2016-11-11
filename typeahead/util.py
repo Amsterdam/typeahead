@@ -2,6 +2,8 @@
 import os
 import re
 
+import settings
+
 
 def get_docker_host():
     """
@@ -20,55 +22,40 @@ def get_docker_host():
     return 'localhost'
 
 
-def get_consul_hosts_org():
+def in_docker():
     """
-    Find consul hosts. As a precursor to autodiscovery this method checks for
-    environment variables. Or falls back to localhost in case of running locally
-    :return: a list of tuples: [(host, port)]
+    Checks pid 1 cgroup settings to check with reasonable certainty we're in a
+    docker env.
+    :return: true when running in a docker container, false otherwise
     """
-    hosts = []
-    hosts += [get_env_variable('CONSUL_HOST', '127.0.0.1:8500')]
-    hosts += [get_env_variable('CONSUL_HOST_2')]
-    hosts += [get_env_variable('CONSUL_HOST_3')]
-
-    return [
-        {
-            'host': hostport.split(":")[0],
-            'port': '8500' if len(hostport.split(':')) == 1 else
-            hostport.split(':')[1]
-        } for hostport in hosts if hostport is not None]
+    try:
+        return '1:name=openrc:/docker' in open('/proc/1/cgroup', 'r').read()
+    except:
+        return False
 
 
-def get_consul_hosts():
+def get_consul_host():
     """
-    Find consul hosts. As a precursor to autodiscovery this method checks for
-    environment variables. Or falls back to localhost in case of running locally
-    :return: a list of tuples: [(host, port)]
+    Retrieve the consul '(host and port)' tuple
     """
-    env = _get_environment()
-    hosts = list(filter(None, [env[key] for key in env.keys() if
-                               key.startswith("CONSUL_HOST")]))
-    if len(hosts) == 0:
-        hosts += ['localhost:8500']
-
-    return [
-        {
-            'host': hostport.split(":")[0],
-            'port': '8500' if len(hostport.split(':')) == 1 else
-            hostport.split(':')[1]
-        } for hostport in hosts if hostport is not None]
+    return {
+        'host': get_docker_host(),
+        'port': 8500 if in_docker() else settings.LOCAL_CONSUL_PORT
+    }
 
 
-def register(consul):
+def register(consul, agent):
     import socket
-    s = consul.agent.service
-    s.register("Python_app",
-               service_id=socket.gethostname(),
-               address="ip",
-               port=5000,
-               http="http://" + "ip" + ":5000/healthcheck",
-               interval="10s",
-               tags=['python'])
+    hostport = get_docker_host()
+    service_id = socket.gethostname()
+    agent.register(settings.SERVICE_NAME,
+                   service_id=service_id,
+                   address=hostport,
+                   port=settings.SERVICE_PORT,
+                   http=settings.HEALTH_CHECK_ENDPOINT,
+                   interval=settings.HEALTH_CHECK_INTERVAL,
+                   tags=['python', 'typeahead'])
+    return service_id
 
 
 def get_env_variable(name, default_value=None):

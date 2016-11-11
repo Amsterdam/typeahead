@@ -1,0 +1,17 @@
+{
+  "bootstrap": false,
+  "server": false,
+  "ui": false,
+  "bind_addr": "0.0.0.0",
+  "client_addr": "0.0.0.0",
+  "datacenter": "prod",
+  "data_dir": "/var/consul",
+  "ui_dir": "/opt/consului",
+  "log_level": "INFO",
+  "enable_syslog": false,
+  "retry_join": [
+    "el01.datapunt.amsterdam.nl",
+    "el03.datapunt.amsterdam.nl",
+    "el04.datapunt.amsterdam.nl"
+  ]
+}

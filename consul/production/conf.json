@@ -4,7 +4,7 @@
   "ui": false,
   "bind_addr": "0.0.0.0",
   "client_addr": "0.0.0.0",
-  "datacenter": "prod",
+  "datacenter": "prod1",
   "data_dir": "/var/consul",
   "ui_dir": "/opt/consului",
   "log_level": "INFO",

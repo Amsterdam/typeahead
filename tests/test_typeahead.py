@@ -5,7 +5,7 @@ import unittest
 from mockito import *
 from requests import sessions
 
-import typeahead
+import server
 from mocks import MockResponse
 from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
     TypeAheadResponses
@@ -14,7 +14,7 @@ from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
 class TestTypeahead(unittest.TestCase):
     def setUp(self):
         # creates a test client
-        self.app = typeahead.app.test_client()
+        self.app = server.app.test_client()
         # propagate the exceptions to the test client
         self.app.testing = True
 

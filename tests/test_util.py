@@ -10,31 +10,23 @@ from typeahead import util
 class TestUtil(unittest.TestCase):
     def test_consul_all_variables_set(self):
         try:
-            when(util)._get_environment().thenReturn(
-                {'CONSUL_HOST', "some_host:1234"},
-                {'CONSUL_HOST_2', "second_host:1234"},
-                {'CONSUL_HOST_3', "third_host:3214"})
+            when(util).get_docker_host().thenReturn("some_host")
+            when(util).in_docker().thenReturn(True)
 
-            consul_hosts = util.get_consul_hosts()
+            consul_host = util.get_consul_host()
 
-            self.assertEqual([{'host': 'some_host', 'port': '1234'},
-                              {'host': 'second_host', 'port': '1234'},
-                              {'host': 'third_host', 'port': '3214'}],
-                             consul_hosts)
+            self.assertEqual({'host': 'some_host', 'port': 8500}, consul_host)
         finally:
             unstub()
 
     def test_consul_no_variables_set(self):
         try:
-            when(os).getenv('CONSUL_HOST',
-                            '127.0.0.1:8500').thenReturn("default_host:1234")
-            when(os).getenv('CONSUL_HOST_2', None).thenReturn(None)
-            when(os).getenv('CONSUL_HOST_3', None).thenReturn(None)
+            when(util).get_docker_host().thenReturn("some_host")
+            when(util).in_docker().thenReturn(False)
 
-            consul_hosts = util.get_consul_hosts()
+            consul_host = util.get_consul_host()
 
-            self.assertEqual([
-                {'host': 'default_host', 'port': '1234'}], consul_hosts)
+            self.assertEqual({'host': 'some_host', 'port': 8501}, consul_host)
         finally:
             unstub()
 

@@ -13,27 +13,17 @@ import settings
 import typeahead_api
 import util
 
-log = Logger(__name__)
-log.addHandler(StreamHandler(stream=sys.stdout))
-log.setLevel(level.INFO)
-
-consul_host = util.get_consul_host()
-
-log.info('Connecting to Consul')
-consul_client = Consul(host=consul_host['host'],
-                       port=consul_host['port'])
-consul_service = consul_client.agent.service
-service_id = util.register(consul_client, consul_service)
-
-log.info("Spawning awesomeness: Typeahead API")
-
 app = Flask(__name__)
 api = Api(app)
 
 
 @app.route("/health", methods=['GET'])
 def health():
-    return "OK"
+    """
+    No database so all request reaching this endpoint mean the service is ok
+    :return: the string OK
+    """
+    return 'api status: OK'
 
 
 @app.route("/spec")
@@ -54,7 +44,27 @@ api.add_resource(typeahead_api.TypeAheadRequest, '/tr')
 
 # And Run
 if __name__ == '__main__':
+    service_id = -1
+    consul_service = None
+    consul_client = None
+
     try:
+        log = Logger(__name__)
+        log.addHandler(StreamHandler(stream=sys.stdout))
+        log.setLevel(level.INFO)
+
+        if not app.testing:
+            consul_host = util.get_consul_host()
+
+            log.info('Connecting to Consul')
+            consul_client = Consul(host=consul_host['host'],
+                                   port=consul_host['port'])
+            consul_service = consul_client.agent.service
+
+            service_id = util.register(consul_client, consul_service)
+
+        log.info("Spawning awesomeness: Typeahead API")
+
         app.run(debug=settings.DEBUG,
                 host=settings.SERVICE_BINDING,
                 port=settings.SERVICE_PORT)

@@ -11,7 +11,7 @@
   "enable_syslog": false,
   "retry_join": [
     "el01.datapunt.amsterdam.nl",
-    "el03.datapunt.amsterdam.nl",
-    "el04.datapunt.amsterdam.nl"
+    "el02.datapunt.amsterdam.nl",
+    "el03.datapunt.amsterdam.nl"
   ]
 }

@@ -17,4 +17,4 @@ done
 
 sleep 5
 
-uwsgi --ini /app/uwsgi.ini
+uwsgi --ini /app/typeahead/uwsgi.ini

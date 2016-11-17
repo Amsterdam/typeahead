@@ -16,3 +16,23 @@ HEALTH_CHECK_ENDPOINT = 'http://{host}:{port}/health'.format(host=INFERRED_IP,
 HEALTH_CHECK_INTERVAL = '10s'
 
 DEBUG = True
+
+DEFAULT_UPSTREAM_TIMEOUT = 0.5
+
+UPSTREAM_CONFIG = {
+    'hr': {
+        'endpoint': 'http://hr.endpoint.internal',
+        'external': 'http://datapunt.external/hr',
+        'maxresults': 5,
+        'weight': 10,
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT
+
+    },
+    'nap': {
+        'endpoint': 'http://nap.endpoint.internal',
+        'external': 'http://datapunt.external/nap',
+        'maxresults': 5,
+        'weight': 6,
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT
+    }
+}

@@ -6,6 +6,7 @@ import json
 from gevent import monkey
 from grequests import AsyncRequest
 
+import settings
 from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
     TypeAheadResponses
 
@@ -74,22 +75,4 @@ class TypeAheadQueryTask:
         :return: A dict: name -> endpoint containing all available endpoints.
         """
 
-        default_timeout = 0.5
-
-        return {
-            'hr': {
-                'endpoint': 'http://hr.endpoint.internal',
-                'external': 'http://datapunt.external/hr',
-                'maxresults': 5,
-                'weight': 10,
-                'timeout': default_timeout
-
-            },
-            'nap': {
-                'endpoint': 'http://nap.endpoint.internal',
-                'external': 'http://datapunt.external/nap',
-                'maxresults': 5,
-                'weight': 6,
-                'timeout': default_timeout
-            }
-        }
+        return settings.UPSTREAM_CONFIG

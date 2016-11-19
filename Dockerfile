@@ -8,9 +8,7 @@ EXPOSE 8080
 
 COPY requirements.txt /app/
 
-RUN pip install --upgrade pip \
- && pip install uwsgi \
- && pip install --no-cache-dir -r requirements.txt \
+RUN pip install --no-cache-dir -r requirements.txt \
  && adduser --system typeahead \
  && addgroup --system typeahead
 

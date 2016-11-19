@@ -2,7 +2,7 @@
 import os
 import re
 
-import settings
+import conf
 
 
 def get_docker_host():
@@ -40,7 +40,7 @@ def get_consul_host():
     """
     return {
         'host': get_docker_host(),
-        'port': 8500 if in_docker() else settings.LOCAL_CONSUL_PORT
+        'port': 8500 if in_docker() else conf.LOCAL_CONSUL_PORT
     }
 
 
@@ -48,12 +48,12 @@ def register(consul, agent):
     import socket
     hostport = get_docker_host()
     service_id = socket.gethostname()
-    agent.register(settings.SERVICE_NAME,
+    agent.register(conf.SERVICE_NAME,
                    service_id=service_id,
                    address=hostport,
-                   port=settings.SERVICE_PORT,
-                   http=settings.HEALTH_CHECK_ENDPOINT,
-                   interval=settings.HEALTH_CHECK_INTERVAL,
+                   port=conf.SERVICE_PORT,
+                   http=conf.HEALTH_CHECK_ENDPOINT,
+                   interval=conf.HEALTH_CHECK_INTERVAL,
                    tags=['python', 'typeahead'])
     return service_id
 

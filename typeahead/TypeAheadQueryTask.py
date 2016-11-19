@@ -6,7 +6,7 @@ import json
 from gevent import monkey
 from grequests import AsyncRequest
 
-import settings
+import conf
 from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
     TypeAheadResponses
 
@@ -75,4 +75,4 @@ class TypeAheadQueryTask:
         :return: A dict: name -> endpoint containing all available endpoints.
         """
 
-        return settings.UPSTREAM_CONFIG
+        return conf.UPSTREAM_CONFIG

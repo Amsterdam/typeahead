@@ -49,7 +49,7 @@ with app.app_context():
     log.info("Spawning awesomeness: Typeahead API")
 
 # Mount API endpoints
-api.add_resource(typeahead_api.TypeAheadRequest, '/tr')
+api.add_resource(typeahead_api.TypeAheadRequest, '/typeahead')
 
 # And Run
 if __name__ == '__main__':

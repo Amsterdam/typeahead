@@ -44,7 +44,7 @@ class TypeAheadQueryTask:
 
         for result in results:
             if result is not None and result.ok:
-                print(result.text)
+                self.logger.debug(result.text)
                 for res in result.json():
                     suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]]
                     response.add_response(
@@ -54,7 +54,7 @@ class TypeAheadQueryTask:
 
     def get_endpoint(self, endpoint_info):
         q_url = endpoint_info['endpoint'] + '?q={q}'.format(q=self.query)
-        print('Query url: {u}'.format(u=q_url))
+        self.logger.debug('Query url: {u}'.format(u=q_url))
         return q_url
 
     def _handler(self, request: grequests.AsyncRequest,

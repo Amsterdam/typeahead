@@ -50,7 +50,7 @@ class TypeAheadQueryTask:
         for result in results:
             if result is not None and result.ok:
                 print("ok")
-                for res in json.loads(result.json().decode('utf-8')):
+                for res in result.json():
                     suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]]
                     response.add_response(
                         TypeAheadResponse(res['label'], suggs))

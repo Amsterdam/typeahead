@@ -32,8 +32,8 @@ class TypeAheadQueryTask:
         for name, endpoint_info in self.upstream_info.items():
             requests.append(
                 grequests.get(
-                    endpoint_info['endpoint'],
-                    parameters={'q': self.query},
+                    endpoint_info['endpoint'] + '?q={q}'.format(q=self.query),
+                    # parameters={'q': self.query},
                     timeout=endpoint_info['timeout'],
                     session=self.session,
                     #max_results=endpoint_info['maxresults'],
@@ -49,6 +49,7 @@ class TypeAheadQueryTask:
 
         for result in results:
             if result is not None and result.ok:
+                print("ok")
                 for res in json.loads(result.json().decode('utf-8')):
                     suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]]
                     response.add_response(

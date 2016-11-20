@@ -2,7 +2,6 @@ import logging
 from typing import Dict, List, Any
 
 import grequests
-import json
 from gevent import monkey
 from grequests import AsyncRequest
 
@@ -32,13 +31,9 @@ class TypeAheadQueryTask:
         for name, endpoint_info in self.upstream_info.items():
             requests.append(
                 grequests.get(
-                    endpoint_info['endpoint'] + '?q={q}'.format(q=self.query),
-                    # parameters={'q': self.query},
+                    self.get_endpoint(endpoint_info),
                     timeout=endpoint_info['timeout'],
                     session=self.session,
-                    #max_results=endpoint_info['maxresults'],
-                    #external_url=endpoint_info['external'],
-                    #weight=endpoint_info['weight']
                 )
             )
 
@@ -49,13 +44,18 @@ class TypeAheadQueryTask:
 
         for result in results:
             if result is not None and result.ok:
-                print("ok")
+                print(result.text)
                 for res in result.json():
                     suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]]
                     response.add_response(
                         TypeAheadResponse(res['label'], suggs))
 
         return response
+
+    def get_endpoint(self, endpoint_info):
+        q_url = endpoint_info['endpoint'] + '?q={q}'.format(q=self.query)
+        print('Query url: {u}'.format(u=q_url))
+        return q_url
 
     def _handler(self, request: grequests.AsyncRequest,
                  exception: Exception) -> None:

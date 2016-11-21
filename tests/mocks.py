@@ -1,3 +1,5 @@
+import json
+
 class MockResponse:
     def __init__(self, json_data=None, status_code=None, url=None,
                  encoding=None, _content=None, headers=None, history=None,
@@ -12,12 +14,13 @@ class MockResponse:
         self.request = request
         self._content = _content
         self.url = url
-        self.encoding = encoding
+        self.encoding = encoding if encoding else 'utf-8'
         self.json_data = json_data
         self.status_code = status_code
+        self.text = _content.decode(self.encoding)
 
     def json(self):
-        return self.json_data
+        return self.json_data if self.json_data else json.loads(self.text)
 
     def url(self):
         return self.url

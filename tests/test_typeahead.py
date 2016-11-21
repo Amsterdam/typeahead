@@ -18,6 +18,12 @@ class TestTypeahead(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
+        self.maxDiff = None
+
+        self.bag_url = 'http://handelsregister-api.service.consul:8101/' \
+                       'handelsregister/typeahead'
+        self.hr_url = 'http://bag-api.service.consul:8096/atlas/typeahead/'
+
     def test_index(self):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200, 'index page not found')
@@ -256,24 +262,22 @@ class TestTypeahead(unittest.TestCase):
             status_code=200,
             ok=True,
             url='http://hr.endpoint.internal',
-            json_data=mock_json_content)
+            _content=mock_json_content)
 
         try:
             when(sessions.Session).request(
                 'GET',
-                'http://hr.endpoint.internal',
+                self.hr_url + '?q={q}'.format(q='gibberish get'),
                 timeout=0.5,
-                stream=False,
-                parameters={'q': 'gibberish get'}).thenReturn(mock_hr_response)
+                stream=False).thenReturn(mock_hr_response)
 
             when(sessions.Session).request(
                 'GET',
-                'http://nap.endpoint.internal',
+                self.bag_url + '?q={q}'.format(q='gibberish get'),
                 timeout=0.5,
-                stream=False,
-                parameters={'q': 'gibberish get'}).thenReturn(mock_hr_response)
+                stream=False).thenReturn(mock_hr_response)
 
-            response = self.app.get('/tr?q=gibberish%20get')
+            response = self.app.get('/typeahead?q=gibberish%20get')
 
             self.assertEqual(response.status_code, 200, 'api not working')
 
@@ -294,24 +298,22 @@ class TestTypeahead(unittest.TestCase):
             status_code=200,
             ok=True,
             url='http://hr.endpoint.internal',
-            json_data=mock_json_content)
+            _content=mock_json_content)
 
         try:
             when(sessions.Session).request(
                 'GET',
-                'http://hr.endpoint.internal',
+                self.hr_url + '?q={q}'.format(q='gibberish post'),
                 timeout=0.5,
-                stream=False,
-                parameters={'q': 'gibberish post'}).thenReturn(mock_hr_response)
+                stream=False).thenReturn(mock_hr_response)
 
             when(sessions.Session).request(
                 'GET',
-                'http://nap.endpoint.internal',
+                self.bag_url + '?q={q}'.format(q='gibberish post'),
                 timeout=0.5,
-                stream=False,
-                parameters={'q': 'gibberish post'}).thenReturn(mock_hr_response)
+                stream=False).thenReturn(mock_hr_response)
 
-            response = self.app.post('/tr', data={'q': 'gibberish post'})
+            response = self.app.post('/typeahead', data={'q': 'gibberish post'})
             self.assertEqual(response.status_code, 200, 'api status: OK')
             self.assertEqual(json.loads(response.data.decode('utf-8')),
                              expected_response,

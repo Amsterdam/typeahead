@@ -1,5 +1,5 @@
 import json
-from typing import List, ByteString, Dict, Any
+from typing import List, Dict, Any
 
 
 class Suggestion:
@@ -30,7 +30,7 @@ class TypeAheadResponses:
     def add_response(self, response: TypeAheadResponse):
         self.responses += [response]
 
-    def json_serializable(self)->Dict[str, Any]:
+    def json_serializable(self) -> Dict[str, Any]:
         return [resp.as_python() for resp in self.responses]
 
     def as_json(self) -> str:

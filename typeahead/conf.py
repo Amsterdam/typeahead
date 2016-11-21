@@ -21,16 +21,14 @@ DEFAULT_UPSTREAM_TIMEOUT = 0.5
 
 UPSTREAM_CONFIG = {
     'hr': {
-        'endpoint': 'http://handelsregister-api.service.consul:8101/handelsregister/typeahead',
-        'external': 'http://datapunt.external/hr',
+        'endpoint': 'https://api-acc.datapunt.amsterdam.nl/handelsregister/typeahead',
         'maxresults': 5,
         'weight': 10,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
 
     },
     'bag': {
-        'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/',
-        'external': 'http://datapunt.external/bag',
+        'endpoint': 'https://api-acc.datapunt.amsterdam.nl/atlas/typeahead/',
         'maxresults': 5,
         'weight': 6,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT

@@ -3,14 +3,13 @@ import logging as level
 import sys
 from logging import Logger, StreamHandler
 
-from flask import Flask, current_app
+from flask import Flask
 from flask.json import jsonify
 from flask_restful import Api
 from flask_swagger import swagger
 
 import conf
-import typeahead_api
-import util
+from typeahead_api import TypeAheadRequest
 
 app = Flask(__name__)
 api = Api(app)
@@ -29,7 +28,7 @@ def health():
     return 'api status: OK'
 
 
-@app.route("/spec")
+@app.route("/spec.json")
 def spec():
     swag = swagger(app)
     swag['info']['version'] = "1.0"
@@ -49,7 +48,9 @@ with app.app_context():
     log.info("Spawning awesomeness: Typeahead API")
 
 # Mount API endpoints
-api.add_resource(typeahead_api.TypeAheadRequest, '/typeahead')
+typahead_view = TypeAheadRequest.as_view('typeahead')
+app.add_url_rule('/typeahead', methods=['GET'], view_func=typahead_view)
+
 
 # And Run
 if __name__ == '__main__':

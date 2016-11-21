@@ -28,12 +28,18 @@ class TypeAheadQueryTask:
         requests = []  # type: List[AsyncRequest]
         response = TypeAheadResponses()
 
+        # Don't relay empty queries
+        if not self.query or len(self.query.strip()) < 1:
+            return response
+
         for name, endpoint_info in self.upstream_info.items():
             requests.append(
                 grequests.get(
                     self.get_endpoint(endpoint_info),
                     timeout=endpoint_info['timeout'],
                     session=self.session,
+                    headers={'Accept': 'application/json',
+                             'Content-Type': 'application/json'}
                 )
             )
 

@@ -5,6 +5,7 @@ import unittest
 from mockito import *
 from requests import sessions
 
+import conf
 import server
 from tests.mocks import MockResponse
 from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
@@ -20,9 +21,8 @@ class TestTypeahead(unittest.TestCase):
 
         self.maxDiff = None
 
-        self.bag_url = 'http://handelsregister-api.service.consul:8101/' \
-                       'handelsregister/typeahead'
-        self.hr_url = 'http://bag-api.service.consul:8096/atlas/typeahead/'
+        self.bag_url = conf.UPSTREAM_CONFIG['bag']['endpoint']
+        self.hr_url = conf.UPSTREAM_CONFIG['hr']['endpoint']
 
     def test_index(self):
         response = self.app.get('/')
@@ -269,12 +269,16 @@ class TestTypeahead(unittest.TestCase):
                 'GET',
                 self.hr_url + '?q={q}'.format(q='gibberish get'),
                 timeout=0.5,
+                headers={'Accept': 'application/json',
+                         'Content-Type': 'application/json'},
                 stream=False).thenReturn(mock_hr_response)
 
             when(sessions.Session).request(
                 'GET',
                 self.bag_url + '?q={q}'.format(q='gibberish get'),
                 timeout=0.5,
+                headers={'Accept': 'application/json',
+                         'Content-Type': 'application/json'},
                 stream=False).thenReturn(mock_hr_response)
 
             response = self.app.get('/typeahead?q=gibberish%20get')
@@ -290,38 +294,20 @@ class TestTypeahead(unittest.TestCase):
             unstub()
 
     def test_api_typahead_post(self):
-        mock_json_content = self.get_mock_json_content()
-        expected_response = self.get_expected_response()
+        response = self.app.post('/typeahead', data={'q': 'gibberish post'})
+        self.assertEqual(response.status_code, 405, 'Post should be forbidden')
 
-        mock_hr_response = MockResponse(
-            encoding='utf-8',
-            status_code=200,
-            ok=True,
-            url='http://hr.endpoint.internal',
-            _content=mock_json_content)
+    def test_no_query(self):
+        response = self.app.get('/typeahead')
+        self.assertEqual(response.status_code, 400, 'Query should be provided')
 
-        try:
-            when(sessions.Session).request(
-                'GET',
-                self.hr_url + '?q={q}'.format(q='gibberish post'),
-                timeout=0.5,
-                stream=False).thenReturn(mock_hr_response)
+    def test_empty_query(self):
+        response = self.app.get('/typeahead', data={'q': ''})
+        self.assertEqual(response.status_code, 200, 'Empty query should work without trying to go upstream')
 
-            when(sessions.Session).request(
-                'GET',
-                self.bag_url + '?q={q}'.format(q='gibberish post'),
-                timeout=0.5,
-                stream=False).thenReturn(mock_hr_response)
-
-            response = self.app.post('/typeahead', data={'q': 'gibberish post'})
-            self.assertEqual(response.status_code, 200, 'api status: OK')
-            self.assertEqual(json.loads(response.data.decode('utf-8')),
-                             expected_response,
-                             'api response not quite as expected')
-            self.assertEqual(response.content_type, 'application/json',
-                             'Verkeerd response type')
-        finally:
-            unstub()
+    def test_semi_empty_query(self):
+        response = self.app.get('/typeahead', data={'q': '   '})
+        self.assertEqual(response.status_code, 200, 'Query with only spaces should work without trying to go upstream')
 
     def test_str(self):
         sut = TypeAheadResponses([

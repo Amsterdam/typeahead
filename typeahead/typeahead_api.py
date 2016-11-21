@@ -1,60 +1,58 @@
 # -*- coding: utf-8 -*-
+import sys
 
-from flask_restful import Resource
+from flask.json import jsonify
+from flask.views import MethodView
 from flask_restful import reqparse
 from gevent import monkey
-import sys
 
 from TypeAheadQueryTask import TypeAheadQueryTask
 
 monkey.patch_all(thread=False, select=False)
 
 
-class TypeAheadRequest(Resource):
-    """
-    Query for typeahead
-    in: q=da
-    terug:[{label: 'type', content: [{uri: '', _display: ''}, ..]}, ...]
-    ---
-    tags:
-          - typeahead
-        definitions:
-          - schema:
-              id: keystrokes
-              properties:
-                name:
-                 type: string
-                 description: the text entered by the user
-        parameters:
-          - in: body
-            name: body
-            schema:
-              id: keystrokes
-              required:
-                - q
-              properties:
-                q:
-                  type: string
-                  description: The characters the user typed sofar
-        responses:
-          200:
-            description: Typing suggestions
-
-    """
-
+class TypeAheadRequest(MethodView):
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument('q', type=str, help='the characters typed')
-        args = parser.parse_args()
+        """
+        Query for typeahead results in underlying endpoints
+        ---
+        description:
+            - "Look for possible objects in upstream apis"
+        tags:
+            - "typeahead"
+        produces:
+            - "application/json"
+        parameters:
+            -
+                name: "q"
+                in: "query"
+                description: "The user input to search for"
+                required: true
+                type: "string"
+        responses:
+            200:
+                description: "Typing suggestions"
+            default:
+                description: "Unexpected error"
+
+        """
+        parser = reqparse.RequestParser(trim=True)
+        parser.add_argument(
+            'q',
+            type=str,
+            required=True,
+            help='the characters typed')
+
+        args = parser.parse_args(strict=True)
 
         try:
-            return TypeAheadQueryTask(
+            response_value = TypeAheadQueryTask(
                 query=args['q'],
-                overall_timeout=1
-            ).work().json_serializable(), 200
+                overall_timeout=1).work().json_serializable()
+            return jsonify(response_value), 200
         except():
             print("Unexpected error:", sys.exc_info()[0])
-            return {}, 500
+            return jsonify([]), 500, {'you': 'fool'}
 
     def post(self):
         return self.get()

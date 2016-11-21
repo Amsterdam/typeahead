@@ -4,7 +4,7 @@ import unittest
 
 from mockito import *
 
-from typeahead import util
+import util
 
 
 class TestUtil(unittest.TestCase):

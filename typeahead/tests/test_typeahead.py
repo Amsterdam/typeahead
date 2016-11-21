@@ -6,7 +6,7 @@ from mockito import *
 from requests import sessions
 
 import server
-from mocks import MockResponse
+from tests.mocks import MockResponse
 from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
     TypeAheadResponses
 

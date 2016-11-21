@@ -22,6 +22,9 @@ class MockResponse:
     def json(self):
         return self.json_data if self.json_data else json.loads(self.text)
 
+    def get_json(self):
+        return self.json()
+
     def url(self):
         return self.url
 

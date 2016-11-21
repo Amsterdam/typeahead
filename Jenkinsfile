@@ -26,11 +26,8 @@ node {
     stage('Test') {
         tryStep "test", {
             sh "docker-compose build --pull"
-            sh "docker-compose up -d"
-            sh "docker-compose exec typeahead python -m unittest discover -s /app/typeahead/"
-        }, {
-            sh "docker-compose down"
-        }
+            sh "docker-compose run typeahead python -m unittest discover -s /app/typeahead/"
+        }, {}
     }
 
     stage("Build develop image") {

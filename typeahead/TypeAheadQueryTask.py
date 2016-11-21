@@ -38,23 +38,20 @@ class TypeAheadQueryTask:
                     self.get_endpoint(endpoint_info),
                     timeout=endpoint_info['timeout'],
                     session=self.session,
-                    headers={'Accept': 'application/json',
-                             'Content-Type': 'application/json'}
+                    hooks={
+                        'response': self._get_response_handler(name, response)
+                    },
+                    headers={
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
                 )
             )
 
-        results = grequests.map(
+        grequests.map(
             requests,
-            exception_handler=self._handler,
+            exception_handler=self._err_handler,
             gtimeout=self.overall_timeout)
-
-        for result in results:
-            if result is not None and result.ok:
-                self.logger.debug(result.text)
-                for res in result.json():
-                    suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]]
-                    response.add_response(
-                        TypeAheadResponse(res['label'], suggs))
 
         return response
 
@@ -63,13 +60,26 @@ class TypeAheadQueryTask:
         self.logger.debug('Query url: {u}'.format(u=q_url))
         return q_url
 
-    def _handler(self, request: grequests.AsyncRequest,
-                 exception: Exception) -> None:
+    def _err_handler(self, request: grequests.AsyncRequest,
+                     exception: Exception) -> None:
         self.logger.exception(
             "Problem getting upstream typeahead info {url}".format(
                 url=request.url),
             exc_info=exception
         )
+
+    def _get_response_handler(self, key, result_holder, *args, **kwargs):
+        def _response_handler(response, *args, **kwargs):
+            if response is not None and response.ok and response.status_code == 200:
+                settings = self.upstream_info[key]
+                maxresults = settings['maxresults']
+                weight = settings['weight']
+                for res in response.json():
+                    suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]][:maxresults]
+                    result_holder.add_response(
+                        TypeAheadResponse(res['label'], suggs, weight))
+
+        return _response_handler
 
     @staticmethod
     def get_internal_typeahead_endpoints() -> Dict[str, Dict[str, Any]]:

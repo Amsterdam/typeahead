@@ -9,7 +9,8 @@ class Suggestion:
 
 
 class TypeAheadResponse:
-    def __init__(self, label: str, suggestions: List[Suggestion]):
+    def __init__(self, label: str, suggestions: List[Suggestion], weight):
+        self.weight = weight
         self.label = label
         self.suggestions = suggestions
 
@@ -31,7 +32,9 @@ class TypeAheadResponses:
         self.responses += [response]
 
     def json_serializable(self) -> Dict[str, Any]:
-        return [resp.as_python() for resp in self.responses]
+        return [resp.as_python() for resp in sorted(self.responses,
+                                                    key=lambda r: r.weight,
+                                                    reverse=True)]
 
     def as_json(self) -> str:
         return json.dumps(self.json_serializable())

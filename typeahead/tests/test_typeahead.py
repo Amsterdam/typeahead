@@ -332,6 +332,25 @@ class TestTypeahead(unittest.TestCase):
             ]
         }])
 
+    def test_typeaheadresult_sorting(self):
+        sut = TypeAheadResponses([
+            TypeAheadResponse('c', [], 222),
+            TypeAheadResponse('a', [], 1000),
+            TypeAheadResponse('d', [], 111),
+            TypeAheadResponse('e', [], -5),
+            TypeAheadResponse('b', [], 444),
+        ])
+        expected_result = [
+            TypeAheadResponse('a', [], 1000),
+            TypeAheadResponse('b', [], 444),
+            TypeAheadResponse('c', [], 222),
+            TypeAheadResponse('d', [], 111),
+            TypeAheadResponse('e', [], -5),
+        ]
+
+        self.assertEqual(
+            sut._responses_sorted(), expected_result, "Ordering is broken!")
+
 
 if __name__ == '__main__':
     unittest.main()

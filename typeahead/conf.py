@@ -23,15 +23,15 @@ UPSTREAM_CONFIG = {
     'bag': {
         'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/',
         'maxresults': 5,
-        'weight': 6,
+        'weight': 20,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
     'hr': {
-        'endpoint': 'http://handelsregister-api.service.consul:8101/handelsregister/typeahead',
-        'maxresults': 5,
+        'endpoint': 'http://handelsregister-api.service.consul:8101'
+                    '/handelsregister/typeahead',
+        'maxresults': 3,
         'weight': 10,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
-
     }
 }
 

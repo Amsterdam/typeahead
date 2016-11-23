@@ -1,10 +1,13 @@
 import json
+from http.client import HTTPMessage, parse_headers
+from tornado.httputil import HTTPHeaders
+import io
 
 class MockResponse:
     def __init__(self, json_data=None, status_code=None, url=None,
-                 encoding=None, _content=None, headers=None, history=None,
-                 reason=None, cookies=None, elapsed=None, request=None,
-                 ok=False):
+                 encoding=None, _content=None, headers=HTTPHeaders({}),
+                 history=None, reason=None, cookies=None, elapsed=None,
+                 request=None, ok=False):
         self.ok = ok
         self.headers = headers
         self.history = history
@@ -18,6 +21,15 @@ class MockResponse:
         self.json_data = json_data
         self.status_code = status_code
         self.text = _content.decode(self.encoding)
+
+# httplib response compatability:
+        self.status = status_code
+        self.msg = HTTPMessage()
+        self.version = 1
+        self.reason = None
+        self.strict = 0
+        self.original_response = self
+        self.closed = False
 
     def json(self):
         return self.json_data if self.json_data else json.loads(self.text)
@@ -57,3 +69,12 @@ class MockResponse:
 
     def ok(self):
         return self.ok
+
+    def info(self):
+        return self.headers
+
+    def isclosed(self):
+        return self.closed
+
+    def close(self):
+        self.closed = True

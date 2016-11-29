@@ -21,7 +21,7 @@ DEFAULT_UPSTREAM_TIMEOUT = 0.5
 
 UPSTREAM_CONFIG = {
     'bag': {
-        'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/',
+        'endpoint': 'http://bag-api.service.consul:8096/atlas/bag/typeahead/',
         'maxresults': 5,
         'weight': 20,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
@@ -30,8 +30,21 @@ UPSTREAM_CONFIG = {
         'endpoint': 'http://handelsregister-api.service.consul:8101'
                     '/handelsregister/typeahead',
         'maxresults': 3,
-        'weight': 10,
+        'weight': 19,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
-    }
+    },
+    'brk': {
+        'endpoint': 'http://bag-api.service.consul:8096/atlas/brk/typeahead/',
+        'maxresults': 5,
+        'weight': 18,
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT
+    },
+    'meetbouten': {
+        'endpoint': 'http://bag-api.service.consul:8096/atlas/meetbouten/typeahead/',
+        'maxresults': 5,
+        'weight': 17,
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT
+    },
+
 }
 

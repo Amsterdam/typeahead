@@ -52,7 +52,9 @@ class TypeAheadResponse:
         if not isinstance(other, TypeAheadResponse):
             return False
 
-        return self.weight == other.weight and self.label == other.label and self.suggestions == other.suggestions
+        return self.weight == other.weight \
+           and self.label == other.label \
+           and self.suggestions == other.suggestions
 
 
 class TypeAheadResponses:
@@ -64,13 +66,13 @@ class TypeAheadResponses:
 
     def _responses_sorted(self) -> List[TypeAheadResponse]:
         """
-        Get all responses sorted by weight. Hight weight means higher in the
-        result so order is reverse.
+        Get all responses sorted by weight. Higher weight means higher in the
+        result list so order is reverse.
         :return: List[TypeAheadResponse]
         """
         return sorted(self.responses, reverse=True)
 
-    def json_serializable(self) -> Dict[str, Any]:
+    def json_serializable(self) -> List[Dict[str, Any]]:
         return [resp.as_python() for resp in self._responses_sorted()]
 
     def as_json(self) -> str:

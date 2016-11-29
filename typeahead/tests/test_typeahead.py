@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 import json
 import unittest
+from http.client import HTTPResponse
 
 from mockito import *
-from requests import sessions
+from mockito import matchers
+from requests.packages.urllib3.connection import HTTPConnection
+from requests.packages.urllib3.connectionpool import HTTPConnectionPool
+from requests.packages.urllib3.util.timeout import Timeout
 
 import conf
 import server
@@ -266,21 +270,34 @@ class TestTypeahead(unittest.TestCase):
             _content=mock_json_content)
 
         try:
-            when(sessions.Session).request(
-                'GET',
-                self.hr_url + '?q={q}'.format(q='gibberish get'),
-                timeout=0.5,
-                headers={'Accept': 'application/json',
-                         'Content-Type': 'application/json'},
-                stream=False).thenReturn(mock_hr_response)
+            when(HTTPConnectionPool)._make_request(
+                matchers.Any(HTTPConnection),
+                matchers.Eq('GET'),
+                matchers.Eq('/handelsregister/typeahead?q=gibberish%20get'),
+                headers=matchers.Eq({'Connection': 'keep-alive',
+                                     'Content-Type': 'application/json',
+                                     'User-Agent': 'python-requests/2.12.1',
+                                     'Accept': 'application/json',
+                                     'Accept-Encoding': 'gzip, deflate'}),
+                body=matchers.eq(None),
+                chunked=matchers.eq(False),
+                timeout=matchers.Any(Timeout)
+            ).thenReturn(mock_hr_response)
 
-            when(sessions.Session).request(
-                'GET',
-                self.bag_url + '?q={q}'.format(q='gibberish get'),
-                timeout=0.5,
-                headers={'Accept': 'application/json',
-                         'Content-Type': 'application/json'},
-                stream=False).thenReturn(mock_hr_response)
+            when(HTTPConnectionPool)._make_request(
+                matchers.Any(HTTPConnection),
+                matchers.Eq('GET'),
+                matchers.Eq('/atlas/typeahead/?q=gibberish%20get'),
+                headers=matchers.Eq({'Connection': 'keep-alive',
+                                     'Accept-Encoding': 'gzip, deflate',
+                                     'Content-Type': 'application/json',
+                                     'User-Agent': 'python-requests/2.12.1',
+                                     'Accept': 'application/json'}),
+                body=matchers.eq(None),
+                chunked=matchers.eq(False),
+                timeout=matchers.Any(Timeout)
+            ).thenReturn(mock_hr_response)
+
 
             response = self.app.get('/typeahead?q=gibberish%20get')
 

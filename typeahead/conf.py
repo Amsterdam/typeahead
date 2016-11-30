@@ -46,7 +46,7 @@ UPSTREAM_CONFIG = {
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
     'meetbouten': {
-        'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/meetbouten/',
+        'endpoint': 'http://nap-api.service.consul:8081/meetbouten/typeahead/',
         'maxresults': 5,
         'weight': 16,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT

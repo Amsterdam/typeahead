@@ -39,10 +39,16 @@ UPSTREAM_CONFIG = {
         'weight': 18,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
+    'gebieden': {
+        'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/gebieden/',
+        'maxresults': 5,
+        'weight': 17,
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT
+    },
     'meetbouten': {
         'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/meetbouten/',
         'maxresults': 5,
-        'weight': 17,
+        'weight': 16,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
 

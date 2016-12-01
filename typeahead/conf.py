@@ -22,7 +22,7 @@ DEFAULT_UPSTREAM_TIMEOUT = 0.5
 UPSTREAM_CONFIG = {
     'bag': {
         'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/bag/',
-        'maxresults': 5,
+        'maxresults': 3,
         'weight': 20,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
@@ -35,19 +35,19 @@ UPSTREAM_CONFIG = {
     },
     'brk': {
         'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/brk/',
-        'maxresults': 5,
+        'maxresults': 3,
         'weight': 18,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
     'gebieden': {
         'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/gebieden/',
-        'maxresults': 5,
+        'maxresults': 3,
         'weight': 17,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
     'meetbouten': {
         'endpoint': 'http://nap-api.service.consul:8081/meetbouten/typeahead/',
-        'maxresults': 5,
+        'maxresults': 3,
         'weight': 16,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },

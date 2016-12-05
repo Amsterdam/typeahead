@@ -76,8 +76,9 @@ class TypeAheadQueryTask:
                 weight = settings['weight']
                 for res in response.json():
                     suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]][:maxresults]
-                    result_holder.add_response(
-                        TypeAheadResponse(res['label'], suggs, weight))
+                    if len(suggs) > 0:
+                        result_holder.add_response(
+                            TypeAheadResponse(res['label'], suggs, weight))
 
         return _response_handler
 

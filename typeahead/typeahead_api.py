@@ -49,7 +49,7 @@ class TypeAheadRequest(MethodView):
             response_value = TypeAheadQueryTask(
                 query=args['q'],
                 overall_timeout=1).work().json_serializable()
-            return jsonify(response_value), 200
+            return jsonify(response_value), 200, {'Content-Type': 'application/json; charset=utf-8'}
         except():
             print("Unexpected error:", sys.exc_info()[0])
             return jsonify([]), 500, {'you': 'fool'}

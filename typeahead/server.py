@@ -3,6 +3,7 @@ import logging as level
 import sys
 from logging import Logger, StreamHandler
 
+import werkzeug
 from flask import Flask
 from flask.json import jsonify
 from flask_restful import Api
@@ -13,6 +14,8 @@ from typeahead_api import TypeAheadRequest
 
 app = Flask(__name__)
 api = Api(app)
+
+app.url_map.strict_slashes = False
 
 service_id = -1
 consul_service = None
@@ -49,7 +52,6 @@ with app.app_context():
 
 # Mount API endpoints
 typahead_view = TypeAheadRequest.as_view('typeahead')
-app.add_url_rule('/typeahead', methods=['GET'], view_func=typahead_view)
 app.add_url_rule('/typeahead/', methods=['GET'], view_func=typahead_view)
 
 # And Run

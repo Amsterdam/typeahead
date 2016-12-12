@@ -51,7 +51,6 @@ with app.app_context():
 typahead_view = TypeAheadRequest.as_view('typeahead')
 app.add_url_rule('/typeahead', methods=['GET'], view_func=typahead_view)
 app.add_url_rule('/typeahead/', methods=['GET'], view_func=typahead_view)
-app.url_map.strict_slashes = False
 
 # And Run
 if __name__ == '__main__':

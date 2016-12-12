@@ -53,8 +53,8 @@ class TypeAheadResponse:
             return False
 
         return self.weight == other.weight \
-           and self.label == other.label \
-           and self.suggestions == other.suggestions
+               and self.label == other.label \
+               and self.suggestions == other.suggestions
 
 
 class TypeAheadResponses:

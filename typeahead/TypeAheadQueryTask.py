@@ -29,7 +29,7 @@ class TypeAheadQueryTask:
         response = TypeAheadResponses()
 
         # Don't relay empty queries
-        if not self.query or len(self.query.strip()) < 1:
+        if not self.query or len(self.query.strip()) < conf.MIN_CHARACTERS:
             return response
 
         for name, endpoint_info in self.upstream_info.items():

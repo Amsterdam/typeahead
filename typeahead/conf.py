@@ -13,6 +13,8 @@ INFERRED_IP = socket.gethostbyname(socket.gethostname())
 HEALTH_CHECK_ENDPOINT = 'http://{host}:{port}/health'.format(host=INFERRED_IP,
                                                              port=SERVICE_PORT)
 
+MIN_CHARACTERS = 3
+
 HEALTH_CHECK_INTERVAL = '10s'
 
 DEBUG = True

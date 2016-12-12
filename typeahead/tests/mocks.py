@@ -1,7 +1,7 @@
 import json
 from http.client import HTTPMessage, parse_headers
 from tornado.httputil import HTTPHeaders
-import io
+
 
 class MockResponse:
     def __init__(self, json_data=None, status_code=None, url=None,

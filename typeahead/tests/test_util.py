@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
 import unittest
 
-from mockito import *
+from mockito import when, unstub
 
 import util
 

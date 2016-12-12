@@ -50,6 +50,7 @@ with app.app_context():
 # Mount API endpoints
 typahead_view = TypeAheadRequest.as_view('typeahead')
 app.add_url_rule('/typeahead', methods=['GET'], view_func=typahead_view)
+app.add_url_rule('/typeahead/', methods=['GET'], view_func=typahead_view)
 app.url_map.strict_slashes = False
 
 # And Run

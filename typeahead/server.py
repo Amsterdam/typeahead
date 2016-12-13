@@ -31,7 +31,7 @@ def health():
     return 'api status: OK'
 
 
-@app.route("/spec.json")
+@app.route("/typeahead/spec.json")
 def spec():
     swag = swagger(app)
     swag['info']['version'] = "1.0"

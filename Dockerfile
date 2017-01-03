@@ -3,6 +3,9 @@ MAINTAINER datapunt.ois@amsterdam.nl
 
 ENV PYTHONUNBUFFERED 1
 
+ENV CONSUL_HOST=${CONSUL_HOST:-consul.service.consul}
+ENV CONSUL_PORT=${CONSUL_PORT:-8500}
+
 WORKDIR /app
 EXPOSE 8080
 

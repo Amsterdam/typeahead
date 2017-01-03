@@ -41,7 +41,7 @@ class TypeAheadRequest(MethodView):
             'q',
             type=str,
             required=True,
-            help='the characters typed')
+            help='Please provide a query using the \'q\' request parameter (eg: ?q=dam)')
 
         args = parser.parse_args(strict=True)
 

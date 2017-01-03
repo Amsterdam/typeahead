@@ -1,10 +1,12 @@
-typeahead:
-  environment:
-    CONSUL_DEFAULT_ENV: "dev"
-    CONSUL_ENV: "${CONSUL_ENV}"
-    CONSUL_ONLY: "false"
-  build: .
-  ports:
-    - "8123:8080"
-    - "8501:8500"
-    - "8401:8400"
+version: '2.1'
+services:
+  typeahead:
+    build: .
+    environment:
+      - CONSUL_HOST=${CONSUL_HOST:-consul.service.consul}
+      - CONSUL_PORT=${CONSUL_PORT:-8500}
+    network_mode: bridge
+    ports:
+      - "8123:8080"
+      - "8501:8500"
+      - "8401:8400"

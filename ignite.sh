@@ -13,7 +13,7 @@ export DOCKER_IP=$(hostname --ip-address)
 
 #Check connectivity
 curl -s -m1 ${METADATA_URL} || exitcode=$?
-if [ -z ${var+x} ] && [ "${exitcode}" -ne 0 ]; then
+if [ -z ${exitcode+x} ] && [ "${exitcode}" -ne 0 ]; then
   export DOCKER_EXTERNAL_IP=${DOCKER_IP}
 else
   export DOCKER_EXTERNAL_IP=$(curl ${METADATA_URL})

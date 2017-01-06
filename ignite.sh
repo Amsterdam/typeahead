@@ -3,8 +3,6 @@
 set -e
 set -u
 
-echo '' | sudo echo "bypassing the lecture"
-
 METADATA_HOST=169.254.169.254
 METADATA_PORT=80
 METADATA_URL=http://${METADATA_HOST}:${METADATA_PORT}/latest/meta-data/local-ipv4

@@ -15,9 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt \
  && adduser --system typeahead \
  && addgroup --system typeahead
 
-COPY ./consul/ /etc/consul.d/
-COPY /typeahead.sudo /etc/sudoers.d/typeahead
-
 COPY . /app/
 RUN chmod 755 /app/check_health.sh \
  && chmod 755 /app/ignite.sh

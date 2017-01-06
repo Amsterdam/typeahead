@@ -3,7 +3,7 @@ services:
   typeahead:
     build: .
     environment:
-      - CONSUL_HOST=${CONSUL_HOST:-consul.service.consul}
+      - CONSUL_HOST=${CONSUL_HOST:-notset}
       - CONSUL_PORT=${CONSUL_PORT:-8500}
     network_mode: bridge
     ports:

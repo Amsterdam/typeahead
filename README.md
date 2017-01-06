@@ -7,7 +7,7 @@ nodig is.
 
 Deze service is afhankelijk van Consul (http://consul.io). Indien er geen parameters worden meegegeven wordt er een 
 Consul http api verwacht. De hostname en poort waar UWSGI naar verbindt hangt af van twee omgevingsvariabelen:
- - CONSUL_HOST (default: consul.service.consul)
+ - CONSUL_HOST (default: extern ip van de docker host mits deze bij openstack of aws draait)
  - CONSUL_PORT (default: 8500)
  
  Het is voor development mogelijk om deze Consul node direct in docker te starten met:

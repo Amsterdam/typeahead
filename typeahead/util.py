@@ -29,7 +29,7 @@ def in_docker():
     :return: true when running in a docker container, false otherwise
     """
     try:
-        return '1:name=openrc:/docker' in open('/proc/1/cgroup', 'r').read()
+        return ':/docker/' in open('/proc/1/cgroup', 'r').read()
     except:
         return False
 

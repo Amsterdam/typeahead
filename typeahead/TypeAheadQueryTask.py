@@ -17,12 +17,21 @@ _C = 'content'
 
 
 class TypeAheadQueryTask:
-    def __init__(self, query: str, overall_timeout: float) -> None:
+    def __init__(self,
+                 query: str,
+                 overall_timeout: float,
+                 headers: Dict[str, str]) -> None:
+
         self.overall_timeout = overall_timeout
         self.query = query
+        self.headers = headers
         self.logger = logging.getLogger(__name__)
         self.session = grequests.Session()
         self.upstream_info = self.get_internal_typeahead_endpoints()
+        self.base_headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
 
     def work(self) -> TypeAheadResponses:
         requests = []  # type: List[AsyncRequest]
@@ -41,10 +50,7 @@ class TypeAheadQueryTask:
                     hooks={
                         'response': self._get_response_handler(name, response)
                     },
-                    headers={
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
+                    headers={**self.headers, **self.base_headers}
                 )
             )
 

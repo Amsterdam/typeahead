@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
+from flask import request
 from flask.json import jsonify
 from flask.views import MethodView
 from flask_restful import reqparse
@@ -41,15 +42,18 @@ class TypeAheadRequest(MethodView):
             'q',
             type=str,
             required=True,
-            help='Please provide a query using the \'q\' request parameter (eg: ?q=dam)')
+            help='Please provide a query using the \'q\' '
+                 'request parameter (eg: ?q=dam)')
 
         args = parser.parse_args(strict=True)
 
         try:
             response_value = TypeAheadQueryTask(
                 query=args['q'],
+                headers=request.headers,
                 overall_timeout=1).work().json_serializable()
-            return jsonify(response_value), 200, {'Content-Type': 'application/json; charset=utf-8'}
+            return jsonify(response_value), 200, {
+                'Content-Type': 'application/json; charset=utf-8'}
         except():
             print("Unexpected error:", sys.exc_info()[0])
             return jsonify([]), 500, {'you': 'fool'}

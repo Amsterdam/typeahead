@@ -4,6 +4,7 @@ from typing import Dict, List, Any
 import grequests
 from gevent import monkey
 from grequests import AsyncRequest
+from requests.packages.urllib3.exceptions import ReadTimeoutError
 
 import conf
 from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
@@ -62,17 +63,19 @@ class TypeAheadQueryTask:
         return response
 
     def get_endpoint(self, endpoint_info):
-        q_url = endpoint_info['endpoint'] + '?q={q}'.format(q=self.query)
-        self.logger.debug('Query url: {u}'.format(u=q_url))
+        q_url = endpoint_info['endpoint'] + f'?q={self.query}'
+        self.logger.debug(f'Query url: {q_url}')
         return q_url
 
-    def _err_handler(self, request: grequests.AsyncRequest,
-                     exception: Exception) -> None:
-        self.logger.exception(
-            "Problem getting upstream typeahead info {url}".format(
-                url=request.url),
-            exc_info=exception
-        )
+    def _err_handler(self, request: AsyncRequest, exception: Exception) -> None:
+        if isinstance(exception, ReadTimeoutError):
+            self.logger.warning(
+                f"Timeout getting upstream typeahead info for: {request.url} "
+                f"({exception!s})")
+        else:
+            self.logger.exception(
+                f"Problem getting upstream typeahead info {request.url}",
+                exc_info=exception)
 
     def _get_response_handler(self, key, result_holder, *args, **kwargs):
         def _response_handler(response, *args, **kwargs):
@@ -81,7 +84,8 @@ class TypeAheadQueryTask:
                 maxresults = settings['maxresults']
                 weight = settings['weight']
                 for res in response.json():
-                    suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]][:maxresults]
+                    suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]][
+                            :maxresults]
                     if len(suggs) > 0:
                         result_holder.add_response(
                             TypeAheadResponse(res['label'], suggs, weight))

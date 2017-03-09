@@ -4,7 +4,7 @@ from typing import Dict, List, Any
 import grequests
 from gevent import monkey
 from grequests import AsyncRequest
-from requests.packages.urllib3.exceptions import ReadTimeoutError
+from requests.exceptions import ReadTimeout
 
 import conf
 from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
@@ -68,7 +68,7 @@ class TypeAheadQueryTask:
         return q_url
 
     def _err_handler(self, request: AsyncRequest, exception: Exception) -> None:
-        if isinstance(exception, ReadTimeoutError):
+        if isinstance(exception, ReadTimeout):
             self.logger.warning(
                 f"Timeout getting upstream typeahead info for: {request.url} "
                 f"({exception!s})")

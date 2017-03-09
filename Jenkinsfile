@@ -24,10 +24,10 @@ node {
 
     stage('Test') {
         tryStep "test", {
-            sh "docker-compose -p typeahead build && " +
-               "docker-compose -p typeahead run -u root --rm typeahead python -m unittest discover -s /app/typeahead/"
+            sh "docker-compose -p typeahead -f docker-compose.yml build && " +
+               "docker-compose -p typeahead -f docker-compose.yml run -u root --rm typeahead python -m unittest discover -s /app/typeahead/"
         }, {
-            sh "docker-compose -p panorama -f .jenkins/docker-compose.yml down"
+            sh "docker-compose -p panorama -f docker-compose.yml down"
         }
     }
 

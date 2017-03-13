@@ -38,6 +38,6 @@ def get_catalogus_type_ahead_response(data, result_holder, maxresults, weight):
     for res in data['result']['results']:
         _uri = "/index.html#?dte=https://api.datapunt.amsterdam.nl/catalogus/api/3/action/package_show?" \
                "id={}&dtfs=T&mpb=topografie&mpz=9&mpv=52.3719:4.9012".format(_U)
-        suggs = [Suggestion(sug[_uri], sug[_D]) for sug in res[_C]][:maxresults]
+        suggs = [Suggestion(sug[_uri], sug[_D]) for sug in res][:maxresults]
         if len(suggs) > 0:
             result_holder.add_response(TypeAheadResponse("Catalogus", suggs, weight))

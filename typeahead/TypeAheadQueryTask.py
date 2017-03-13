@@ -8,6 +8,7 @@ from grequests import AsyncRequest
 import conf
 from model.typeaheadresponse import TypeAheadResponses
 from type_ahead_responses import get_type_ahead_response
+from requests.packages.urllib3.exceptions import ReadTimeoutError
 
 monkey.patch_all(thread=False, select=False)
 
@@ -66,7 +67,7 @@ class TypeAheadQueryTask:
         return q_url
 
     def _err_handler(self, request: AsyncRequest, exception: Exception) -> None:
-        if isinstance(exception, ReadTimeout):
+        if isinstance(exception, ReadTimeoutError):
             self.logger.warning(
                 f"Timeout getting upstream typeahead info for: {request.url} "
                 f"({exception!s})")

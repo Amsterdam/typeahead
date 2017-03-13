@@ -4,11 +4,11 @@ from typing import Dict, List, Any
 import grequests
 from gevent import monkey
 from grequests import AsyncRequest
+from requests.packages.urllib3.exceptions import ReadTimeoutError
 
 import conf
 from model.typeaheadresponse import TypeAheadResponses
 from type_ahead_responses import get_type_ahead_response
-from requests.packages.urllib3.exceptions import ReadTimeoutError
 
 monkey.patch_all(thread=False, select=False)
 

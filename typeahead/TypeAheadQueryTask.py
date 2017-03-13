@@ -65,13 +65,15 @@ class TypeAheadQueryTask:
         self.logger.debug(f'Query url: {q_url}')
         return q_url
 
-    def _err_handler(self, request: grequests.AsyncRequest,
-                     exception: Exception) -> None:
-        self.logger.exception(
-            "Problem getting upstream typeahead info {url}".format(
-                url=request.url),
-            exc_info=exception
-        )
+    def _err_handler(self, request: AsyncRequest, exception: Exception) -> None:
+        if isinstance(exception, ReadTimeout):
+            self.logger.warning(
+                f"Timeout getting upstream typeahead info for: {request.url} "
+                f"({exception!s})")
+        else:
+            self.logger.exception(
+                f"Problem getting upstream typeahead info {request.url}",
+                exc_info=exception)
 
     def _get_response_handler(self, key, result_holder, *args, **kwargs):
         def _response_handler(response, *args, **kwargs):

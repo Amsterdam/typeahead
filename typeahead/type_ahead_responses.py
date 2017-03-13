@@ -33,11 +33,10 @@ def get_catalogus_type_ahead_response(data, result_holder, maxresults, weight):
     """
     _U = 'id'
     _D = 'title'
-    _C = 'notes'
-
-    for res in data['result']['results']:
-        _uri = "/index.html#?dte=https://api.datapunt.amsterdam.nl/catalogus/api/3/action/package_show?" \
-               "id={}&dtfs=T&mpb=topografie&mpz=9&mpv=52.3719:4.9012".format(_U)
-        suggs = [Suggestion(sug[_uri], sug[_D]) for sug in res][:maxresults]
+    _C = 'results'
+    for res in data['result']:
+        # _uri = "https://data.amsterdam.nl/index.html#?dte=https://api.datapunt.amsterdam.nl/catalogus/api/3/action/package_show?" \
+        #        "id={}&dtfs=T&mpb=topografie&mpz=9&mpv=52.3719:4.9012".format(_U)
+        suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]][:maxresults]
         if len(suggs) > 0:
             result_holder.add_response(TypeAheadResponse("Catalogus", suggs, weight))

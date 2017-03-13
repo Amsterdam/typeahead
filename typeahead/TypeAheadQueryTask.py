@@ -6,14 +6,10 @@ from gevent import monkey
 from grequests import AsyncRequest
 
 import conf
-from model.typeaheadresponse import TypeAheadResponse, Suggestion, \
-    TypeAheadResponses
+from model.typeaheadresponse import TypeAheadResponses
+from type_ahead_responses import get_type_ahead_response
 
 monkey.patch_all(thread=False, select=False)
-
-_U = 'uri'
-_D = '_display'
-_C = 'content'
 
 
 class TypeAheadQueryTask:
@@ -62,8 +58,11 @@ class TypeAheadQueryTask:
         return response
 
     def get_endpoint(self, endpoint_info):
-        q_url = endpoint_info['endpoint'] + '?q={q}'.format(q=self.query)
-        self.logger.debug('Query url: {u}'.format(u=q_url))
+        query_start = "?"
+        if query_start in endpoint_info['endpoint']:
+            query_start = "&"
+        q_url = endpoint_info['endpoint'] + f'{query_start}q={self.query}'
+        self.logger.debug(f'Query url: {q_url}')
         return q_url
 
     def _err_handler(self, request: grequests.AsyncRequest,
@@ -80,11 +79,9 @@ class TypeAheadQueryTask:
                 settings = self.upstream_info[key]
                 maxresults = settings['maxresults']
                 weight = settings['weight']
-                for res in response.json():
-                    suggs = [Suggestion(sug[_U], sug[_D]) for sug in res[_C]][:maxresults]
-                    if len(suggs) > 0:
-                        result_holder.add_response(
-                            TypeAheadResponse(res['label'], suggs, weight))
+                # get the the `typeahead_response` function to apply and apply it.
+                type_ahead_response = settings.get('type_ahead_response', get_type_ahead_response)
+                type_ahead_response(response.json(), result_holder, maxresults, weight)
 
         return _response_handler
 

@@ -1,4 +1,6 @@
 import socket
+from type_ahead_responses import get_catalogus_type_ahead_response
+
 
 LOCAL_CONSUL_PORT = 8501
 
@@ -26,7 +28,7 @@ UPSTREAM_CONFIG = {
         'endpoint': 'http://bag-api.service.consul:8096/atlas/typeahead/bag/',
         'maxresults': 3,
         'weight': 20,
-        'timeout': DEFAULT_UPSTREAM_TIMEOUT
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT,
     },
     'hr': {
         'endpoint': 'http://handelsregister-api.service.consul:8101'
@@ -53,6 +55,15 @@ UPSTREAM_CONFIG = {
         'weight': 16,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
+    'catalogus': {
+        'endpoint': 'http://catalogus-api.service.consul:8104/catalogus/api/3/action/package_search/?'
+                    'facet.field=["groups","res_format","organization"]',
+        'maxresults': 3,
+        'weight': 16,
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT,
+        'type_ahead_response': get_catalogus_type_ahead_response,
+    },
 
 }
+
 

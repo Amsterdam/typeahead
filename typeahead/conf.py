@@ -1,5 +1,5 @@
 import socket
-# from type_ahead_responses import get_catalogus_type_ahead_response
+from type_ahead_responses import get_catalogus_type_ahead_response
 
 
 LOCAL_CONSUL_PORT = 8501
@@ -59,11 +59,11 @@ UPSTREAM_CONFIG = {
         'weight': 16,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
-    # 'catalogus': {
-    #     'endpoint': 'http://catalogus-api.service.consul:8104/api/3/action/package_search',
-    #     'maxresults': 3,
-    #     'weight': 16,
-    #     'timeout': DEFAULT_UPSTREAM_TIMEOUT,
-    #     'type_ahead_response': get_catalogus_type_ahead_response,
-    # },
+    'catalogus': {
+        'endpoint': 'http://catalogus-api.service.consul:8104/api/3/action/package_search',
+        'maxresults': 3,
+        'weight': 16,
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT,
+        'type_ahead_response': get_catalogus_type_ahead_response,
+    },
 }

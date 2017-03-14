@@ -59,7 +59,7 @@ class TypeAheadQueryTask:
         return response
 
     def get_endpoint(self, endpoint_info):
-        q_url = endpoint_info['endpoint'] + '?q={self.query}'
+        q_url = endpoint_info['endpoint'] + f'?q={self.query}'
         self.logger.debug(f'Query url: {q_url}')
         return q_url
 

@@ -60,8 +60,7 @@ UPSTREAM_CONFIG = {
         'timeout': DEFAULT_UPSTREAM_TIMEOUT
     },
     'catalogus': {
-        'endpoint': 'http://catalogus-api.service.consul:8104/api/3/action/package_search/?'
-                    'facet.field=["groups","res_format","organization"]',
+        'endpoint': 'http://catalogus-api.service.consul:8104/api/3/action/package_search',
         'maxresults': 3,
         'weight': 16,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT,

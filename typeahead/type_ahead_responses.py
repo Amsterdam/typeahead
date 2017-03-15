@@ -40,4 +40,4 @@ def get_catalogus_type_ahead_response(data, result_holder, maxresults, weight):
         )
     if len(suggs) > 0:
         result_holder.add_response(
-            TypeAheadResponse("Catalogus", suggs, weight))
+            TypeAheadResponse("Datasets", suggs, weight))

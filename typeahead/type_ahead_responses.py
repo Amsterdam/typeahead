@@ -1,7 +1,6 @@
 from model.typeaheadresponse import TypeAheadResponse, Suggestion
 
 
-
 def get_type_ahead_response(data, result_holder, maxresults, weight):
     """
     Default type ahead response
@@ -34,9 +33,11 @@ def get_catalogus_type_ahead_response(data, result_holder, maxresults, weight):
     _U = 'id'
     _D = 'title'
     _C = 'results'
-    for res in data['result']:
-        suggs = [Suggestion(sug[f"catalogus/api/3/action/package_show?id={_U}"], sug[_D])
-                 for sug in res[_C]][:maxresults]
-        if len(suggs) > 0:
-            result_holder.add_response(
-                TypeAheadResponse("Catalogus", suggs, weight))
+    suggs = []
+    for res in data['result'][_C][:maxresults]:
+        suggs.append(
+            Suggestion(f"catalogus/api/3/action/package_show?id={_U}", res[_D])
+        )
+    if len(suggs) > 0:
+        result_holder.add_response(
+            TypeAheadResponse("Catalogus", suggs, weight))

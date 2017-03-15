@@ -45,9 +45,9 @@ class TypeAheadQueryTask:
                     timeout=endpoint_info['timeout'],
                     session=self.session,
                     hooks={
-                        'response': self._get_response_handler(name, response)
+                         'response': self._get_response_handler(name, response)
                     },
-                    headers={**self.headers, **self.base_headers}
+                    headers={**self.base_headers}
                 )
             )
 
@@ -61,6 +61,7 @@ class TypeAheadQueryTask:
     def get_endpoint(self, endpoint_info):
         q_url = endpoint_info['endpoint'] + f'?q={self.query}'
         self.logger.debug(f'Query url: {q_url}')
+        print(q_url)
         return q_url
 
     def _err_handler(self, request: AsyncRequest, exception: Exception) -> None:

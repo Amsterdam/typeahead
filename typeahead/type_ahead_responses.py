@@ -36,7 +36,7 @@ def get_catalogus_type_ahead_response(data, result_holder, maxresults, weight):
     suggs = []
     for res in data['result'][_C][:maxresults]:
         suggs.append(
-            Suggestion(f"catalogus/api/3/action/package_show?id={_U}", res[_D])
+            Suggestion(f"catalogus/api/3/action/package_show?id={res[_U]}", res[_D])
         )
     if len(suggs) > 0:
         result_holder.add_response(

@@ -47,7 +47,7 @@ class TypeAheadQueryTask:
                     hooks={
                          'response': self._get_response_handler(name, response)
                     },
-                    headers={**self.base_headers}
+                    headers={**self.base_headers, **self.headers}
                 )
             )
 

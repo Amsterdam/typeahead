@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 import grequests
 from gevent import monkey
@@ -8,7 +8,7 @@ from requests.packages.urllib3.exceptions import ReadTimeoutError
 
 import conf
 from model.typeaheadresponse import TypeAheadResponses
-from type_ahead_responses import get_type_ahead_response
+from typeahead_response_parsers import get_typeahead_response
 
 monkey.patch_all(thread=False, select=False)
 
@@ -45,7 +45,7 @@ class TypeAheadQueryTask:
                     timeout=endpoint_info['timeout'],
                     session=self.session,
                     hooks={
-                         'response': self._get_response_handler(name, response)
+                        'response': self._get_response_handler(name, response)
                     },
                     headers={**self.base_headers, **self.headers}
                 )
@@ -61,7 +61,6 @@ class TypeAheadQueryTask:
     def get_endpoint(self, endpoint_info):
         q_url = endpoint_info['endpoint'] + f'?q={self.query}'
         self.logger.debug(f'Query url: {q_url}')
-        print(q_url)
         return q_url
 
     def _err_handler(self, request: AsyncRequest, exception: Exception) -> None:
@@ -80,9 +79,9 @@ class TypeAheadQueryTask:
                 settings = self.upstream_info[key]
                 maxresults = settings['maxresults']
                 weight = settings['weight']
-                # get the the `typeahead_response` function to apply and apply it.
-                type_ahead_response = settings.get('type_ahead_response', get_type_ahead_response)
-                type_ahead_response(response.json(), result_holder, maxresults, weight)
+                # get the the `typeahead_response` function to apply.
+                typeahead_response = settings.get('typeahead_response', get_typeahead_response)
+                typeahead_response(response.json(), result_holder, maxresults, weight)
 
         return _response_handler
 

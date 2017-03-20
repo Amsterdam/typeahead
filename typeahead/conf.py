@@ -1,5 +1,5 @@
 import socket
-from type_ahead_responses import get_catalogus_type_ahead_response
+from typeahead_response_parsers import get_catalogus_typeahead_response
 
 
 LOCAL_CONSUL_PORT = 8501
@@ -64,6 +64,6 @@ UPSTREAM_CONFIG = {
         'maxresults': 3,
         'weight': 16,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT,
-        'type_ahead_response': get_catalogus_type_ahead_response,
+        'typeahead_response': get_catalogus_typeahead_response,
     },
 }

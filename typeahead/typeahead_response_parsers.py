@@ -1,7 +1,7 @@
 from model.typeaheadresponse import TypeAheadResponse, Suggestion
 
 
-def get_type_ahead_response(data, result_holder, maxresults, weight):
+def get_typeahead_response(data, result_holder, maxresults, weight):
     """
     Default type ahead response
     :param data:
@@ -21,7 +21,7 @@ def get_type_ahead_response(data, result_holder, maxresults, weight):
                 TypeAheadResponse(res['label'], suggs, weight))
 
 
-def get_catalogus_type_ahead_response(data, result_holder, maxresults, weight):
+def get_catalogus_typeahead_response(data, result_holder, maxresults, weight):
     """
     type ahead response for Catalogus
     :param data:

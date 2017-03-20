@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 import logging as level
 import sys
 from logging import Logger, StreamHandler
 
-import werkzeug
 from flask import Flask
 from flask.json import jsonify
 from flask_restful import Api

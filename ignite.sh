@@ -21,4 +21,4 @@ if [ "${CONSUL_HOST:-notset}" == 'notset' ]; then
     export CONSUL_HOST=${DOCKER_EXTERNAL_IP}
 fi
 
-uwsgi
+uwsgi --ini /app/uwsgi.ini

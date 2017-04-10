@@ -5,6 +5,16 @@ services:
     environment:
       - CONSUL_HOST=${CONSUL_HOST:-notset}
       - CONSUL_PORT=${CONSUL_PORT:-8500}
+      - UWSGI_PLUGIN=consul
+      - UWSGI_HTTP=0.0.0.0:8080
+      - UWSGI_HTTP=0.0.0.0:9191
+      - UWSGI_CHDIR=/app/typeahead/
+      - UWSGI_CALLABLE=app
+      - UWSGI_MASTER=1
+      - UWSGI_PROCESSES=4
+      - UWSGI_VACUUM=1
+      - UWSGI_HARAKIRI=15
+      - UWSGI_DIE_ON_TERM=11
     network_mode: bridge
     ports:
       - "8123:8080"

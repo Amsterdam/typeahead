@@ -70,7 +70,7 @@ class TypeAheadQueryTask:
                 f"({exception!s})")
         else:
             self.logger.exception(
-                f"Problem getting upstream typeahead info {request.url}",
+                    f"Problem getting upstream typeahead info {request.url}\nGot body: {request.body}\n",
                 exc_info=exception)
 
     def _get_response_handler(self, key, result_holder, *args, **kwargs):

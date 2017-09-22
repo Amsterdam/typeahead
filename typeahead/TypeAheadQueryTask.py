@@ -28,7 +28,6 @@ class TypeAheadQueryTask:
         self.upstream_info = self.get_internal_typeahead_endpoints()
         self.base_headers = {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
         }
 
     def work(self) -> TypeAheadResponses:
@@ -48,7 +47,7 @@ class TypeAheadQueryTask:
                     hooks={
                         'response': self._get_response_handler(name, response)
                     },
-                    headers={**self.base_headers, **self.headers}
+                    headers={**self.headers, **self.base_headers}
                 )
             )
 

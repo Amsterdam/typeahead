@@ -68,9 +68,13 @@ class TypeAheadQueryTask:
             self.logger.warning(
                 f"Timeout getting upstream typeahead info for: {request.url} "
                 f"({exception!s})")
+        elif isinstance(exception, json.JSONDecodeError):
+            self.logger.exception(
+                    f"JSON Decode error from upstream typeahead: {request.url}:\n{exception.doc}",
+                exc_info=exception)
         else:
             self.logger.exception(
-                    f"Problem getting upstream typeahead info {request.url}\nGot body: {request.body}\n",
+                    f"Problem getting upstream typeahead info {request.url}",
                 exc_info=exception)
 
     def _get_response_handler(self, key, result_holder, *args, **kwargs):

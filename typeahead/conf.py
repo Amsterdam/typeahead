@@ -33,7 +33,7 @@ UPSTREAM_CONFIG = {
     },
     'hr': {
         'endpoint': 'http://handelsregister-api.service.consul:8101'
-                    '/handelsregister/typeahead',
+                    '/handelsregister/typeahead/',
         'maxresults': 3,
         'weight': 19,
         'timeout': DEFAULT_UPSTREAM_TIMEOUT

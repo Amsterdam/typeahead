@@ -12,6 +12,7 @@ monkey.patch_all(thread=False, select=False)
 
 
 class TypeAheadRequest(MethodView):
+
     def get(self):
         """
         Query for typeahead results in underlying endpoints
@@ -47,9 +48,13 @@ class TypeAheadRequest(MethodView):
         args = parser.parse_args(strict=True)
 
         try:
+            auth = {}
+            if 'Authorization' in request.headers:
+                auth = {'Authorization': request.headers['Authorization']}
+
             response_value = TypeAheadQueryTask(
                 query=args['q'],
-                headers=request.headers,
+                auth=auth,
                 overall_timeout=1).work().json_serializable()
             return jsonify(response_value), 200, {
                 'Content-Type': 'application/json; charset=utf-8'}

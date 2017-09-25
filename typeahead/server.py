@@ -1,5 +1,7 @@
 import logging as level
 import sys
+import graypy
+
 from logging import Logger, StreamHandler
 
 from flask import Flask
@@ -44,7 +46,10 @@ def index():
 
 with app.app_context():
     log = Logger(__name__)
+    handler = graypy.GELFHandler(conf.LOGSTASH_HOST, conf.LOGSTASH_PORT)
+    handler.setLevel(level.ERROR)
     log.addHandler(StreamHandler(stream=sys.stdout))
+    log.addHandler(handler)
     log.setLevel(level.INFO)
     log.info("Spawning awesomeness: Typeahead API")
 

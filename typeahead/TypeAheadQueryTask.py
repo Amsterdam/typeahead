@@ -18,12 +18,13 @@ class TypeAheadQueryTask:
     def __init__(self,
                  query: str,
                  overall_timeout: float,
-                 headers: Dict[str, str]) -> None:
+                 auth: Dict[str, str]) -> None:
 
         self.overall_timeout = overall_timeout
         self.query = query
-        self.headers = headers
+        self.auth = auth
         self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
         self.session = grequests.Session()
         self.upstream_info = self.get_internal_typeahead_endpoints()
         self.base_headers = {
@@ -47,7 +48,7 @@ class TypeAheadQueryTask:
                     hooks={
                         'response': self._get_response_handler(name, response)
                     },
-                    headers={**self.headers, **self.base_headers}
+                    headers={**self.auth, **self.base_headers}
                 )
             )
 
@@ -63,29 +64,33 @@ class TypeAheadQueryTask:
         self.logger.debug(f'Query url: {q_url}')
         return q_url
 
-    def _err_handler(self, request: AsyncRequest, exception: Exception) -> None:
+    def _err_handler(
+            self, request: AsyncRequest, exception: Exception) -> None:
         if isinstance(exception, ReadTimeoutError):
             self.logger.warning(
                 f"Timeout getting upstream typeahead info for: {request.url} "
                 f"({exception!s})")
         elif isinstance(exception, json.JSONDecodeError):
             self.logger.exception(
-                    f"JSON Decode error from upstream typeahead: {request.url}:\n{exception.doc}",
+                f"JSON Decode error from upstream typeahead: {request.url}:\n{exception.doc}",   # noqa
                 exc_info=exception)
         else:
             self.logger.exception(
-                    f"Problem getting upstream typeahead info {request.url}",
+                f"Problem getting upstream typeahead info {request.url}",
                 exc_info=exception)
 
     def _get_response_handler(self, key, result_holder, *args, **kwargs):
         def _response_handler(response, *args, **kwargs):
+
             if response is not None and response.ok and response.status_code == 200:
                 settings = self.upstream_info[key]
                 maxresults = settings['maxresults']
                 weight = settings['weight']
                 # get the the `typeahead_response` function to apply.
-                typeahead_response = settings.get('typeahead_response', get_typeahead_response)
-                typeahead_response(response.json(), result_holder, maxresults, weight)
+                typeahead_response = settings.get(
+                    'typeahead_response', get_typeahead_response)
+                typeahead_response(
+                    response.json(), result_holder, maxresults, weight)
 
         return _response_handler
 
@@ -93,9 +98,9 @@ class TypeAheadQueryTask:
     def get_internal_typeahead_endpoints() -> Dict[str, Dict[str, Any]]:
         """
         For simplicity these urls are now hardcoded. However the should be
-        pulled from consul and services providing typeahead should register with
-        consul. This will allow for graceful degradation of services if one or
-        more endpoints are down.
+        pulled from consul and services providing typeahead should register
+        with consul. This will allow for graceful degradation of services if
+        one or more endpoints are down.
 
         :return: A dict: name -> endpoint containing all available endpoints.
         """

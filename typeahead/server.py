@@ -28,6 +28,8 @@ def health():
     No database so all request reaching this endpoint mean the service is ok
     :return: the string OK
     """
+    if conf.DEBUG:
+        return 'running in debug mode..', 500
     return 'api status: OK'
 
 

@@ -48,10 +48,10 @@ def index():
 
 with app.app_context():
     log = Logger(__name__)
-    handler = graypy.GELFHandler(conf.LOGSTASH_HOST, conf.LOGSTASH_PORT)
-    handler.setLevel(level.ERROR)
+    gelf_handler = graypy.GELFHandler(conf.LOGSTASH_HOST, conf.LOGSTASH_PORT)
+    gelf_handler.setLevel(level.ERROR)
     log.addHandler(StreamHandler(stream=sys.stdout))
-    log.addHandler(handler)
+    log.addHandler(gelf_handler)
     log.setLevel(level.INFO)
     log.info("Spawning awesomeness: Typeahead API")
 

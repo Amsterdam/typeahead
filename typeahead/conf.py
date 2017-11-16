@@ -78,6 +78,14 @@ UPSTREAM_CONFIG = {
         'timeout': DEFAULT_UPSTREAM_TIMEOUT,
         'typeahead_response': get_catalogus_typeahead_response,
     },
+
+    'monumenten': {
+        'endpoint': 'http://monumenten-api.service.consul:8099'
+                    '/monumenten/typeahead/',
+        'maxresults': 6,  # Maximal 3 monuments and 3 complexes . The are returned in one query
+        'weight': 15,
+        'timeout': DEFAULT_UPSTREAM_TIMEOUT,
+    },
 }
 
 local_urls = [
@@ -97,7 +105,10 @@ local_urls = [
             '/handelsregister/typeahead/'),
 
     ('bag', 'https://api.data.amsterdam.nl'
-            '/atlas/typeahead/bag/')
+            '/atlas/typeahead/bag/'),
+
+    ('monumenten', 'https://api.data.amsterdam.nl'
+                   '/monumenten/typeahead/')
 ]
 
 # make typeahead work localy.

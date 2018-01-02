@@ -24,3 +24,4 @@ Consul http api verwacht. De hostname en poort waar UWSGI naar verbindt hangt af
  is aan een eigen netwerk per docker-compose file.
  
  Voor het draaien van typeahead buiten docker is Consul niet nodig.
+ 

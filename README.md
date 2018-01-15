@@ -25,3 +25,9 @@ Consul http api verwacht. De hostname en poort waar UWSGI naar verbindt hangt af
  
  Voor het draaien van typeahead buiten docker is Consul niet nodig.
  
+ Development / Local Testing
+ ===
+ 
+ pas conf.py aan. set `LOCAL = True` if you want to use the public urls / slef chosen urls and not the internal urls.
+ 
+     `python runserver`

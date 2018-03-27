@@ -1,0 +1,179 @@
+$schema: 'http://json-schema.org/draft-07/schema#'
+
+type: object
+
+properties:
+  logging:
+    $ref: '#/definitions/logging.dictconfig'
+  global_search_config:
+    $ref: '#/definitions/global_search_config'
+  search_endpoints:
+    $ref: '#/definitions/search_endpoints'
+  web:
+    $ref: '#/definitions/web'
+  cors:
+    $ref: '#/definitions/cors'
+
+required:
+- logging
+- global_search_config
+- search_endpoints
+- web
+
+
+definitions:
+
+  global_search_config:
+    type: object
+    properties:
+      default_read_timeout:
+        type: number
+      connect_timeout:
+        type: number
+      min_query_length:
+        type: integer
+      max_results_per_endpoint:
+        type: integer
+    required:
+    - default_read_timeout
+    - connect_timeout
+    - min_query_length
+    - max_results_per_endpoint
+    additionalProperties: false
+
+  search_endpoints:
+    type: array
+    items:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - CKAN
+          - DCATAms
+          - Typeahead
+        url:
+          type: string
+        read_timeout:
+          type: number
+      required:
+      - type
+      - url
+
+  web:
+    additionalProperties: false
+    properties:
+      port:
+        type: integer
+        minimum: 1024
+        maximum: 65535
+      baseurl:
+        type: string
+        pattern: '[^/]$'
+    required:
+    - port
+    - baseurl
+    type: object
+
+  cors:
+    type: object
+    additionalProperties: false
+    properties:
+      allow_all:
+        type: boolean
+
+
+  logging.dictconfig:
+    additionalProperties: false
+    properties:
+      disable_existing_loggers:
+        type: boolean
+      filters:
+        patternProperties:
+          ^[a-zA-Z0-9._-]+$:
+            additionalProperties: false
+            properties:
+              name:
+                type: string
+            type: object
+        type: object
+      formatters:
+        patternProperties:
+          '^[a-zA-Z0-9._-]+$':
+            additionalProperties: false
+            properties:
+              datefmt:
+                type: string
+              format:
+                type: string
+            type: object
+        type: object
+      handlers:
+        patternProperties:
+          '^[a-zA-Z0-9._-]+$':
+            properties:
+              class:
+                type: string
+              filters:
+                items:
+                  type: string
+                type: array
+                uniqueItems: true
+              formatter:
+                type: string
+              level:
+                type: string
+            required:
+              - class
+            type: object
+        type: object
+      incremental:
+        type: boolean
+      loggers:
+        patternProperties:
+          ^[a-zA-Z0-9._-]+$:
+            properties:
+              filters:
+                items:
+                  type: string
+                type: array
+                uniqueItems: true
+              handlers:
+                items:
+                  type: string
+                type: array
+                uniqueItems: true
+              level:
+                type: string
+              propagate:
+                type: boolean
+            type: object
+        type: object
+      root:
+        properties:
+          filters:
+            items:
+              type: string
+            type: array
+            uniqueItems: true
+          handlers:
+            items:
+              type: string
+            type: array
+            uniqueItems: true
+          level:
+            enum:
+              - CRITICAL
+              - ERROR
+              - WARNING
+              - INFO
+              - DEBUG
+            type: string
+        type: object
+      version:
+        enum:
+          - 1
+        type: integer
+    required:
+      - version
+    type: object

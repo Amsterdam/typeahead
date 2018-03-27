@@ -1,0 +1,110 @@
+import typing as T
+import urllib.parse
+
+import aiohttp.client
+import aiohttp.client_exceptions
+from pyld import jsonld
+
+from typeahead import metrics
+
+
+class SearchEndpoint:
+
+    def __init__(self, connect_timeout: int, max_results: int,
+                 url: str, read_timeout: T.Optional[float]):
+        self.connect_timeout = connect_timeout
+        self.max_results = max_results
+        self.url = url
+        self.read_timeout = read_timeout
+        # placeholder (each endpoint gets an own connection pool)
+        self._session = None
+
+    @property
+    async def session(self):
+        if self._session is None:
+            self._session = aiohttp.client.ClientSession(
+                conn_timeout=self.connect_timeout, raise_for_status=True
+            )
+        return self._session
+
+    async def wrappedsearch(self, *args, **kwargs):
+        u = self.url
+        try:
+            with metrics.ENDPOINT_SEARCHTIME.labels(endpoint=u).time():
+                return await self.search(*args, **kwargs)
+        except aiohttp.client_exceptions.ClientResponseError as e:
+            metrics.SEARCH_RESP_COUNTER.labels(status=e.status, endpoint=u).inc()
+            raise
+        except Exception as e:
+            metrics.SEARCH_EXC_COUNTER.labels(exc_type=repr(e), endpoint=u).inc()
+            raise
+
+    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
+        raise NotImplementedError()
+
+
+class CKAN(SearchEndpoint):
+
+    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
+        session = await self.session
+        req = session.get(
+            self.url, timeout=self.read_timeout, params={'q': q, 'rows': self.max_results}
+        )
+        async with req as response:
+            result = await response.json()
+            datasets = result['result']['results']
+            if len(datasets) > 0:
+                return [{
+                    "label": "Datasets",
+                    "content": [
+                        {
+                            '_display': d['title'],
+                            'uri': f"catalogus/api/3/action/package_show?id={d['id']}"
+                        }
+                        for d in datasets ]
+                }]
+        return []
+
+
+class DCATAms(SearchEndpoint):
+
+    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
+        headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}
+        session = await self.session
+        req = session.get(
+            self.url, timeout=self.read_timeout, headers=headers,
+            params={'q': q, 'limit': self.max_results}
+        )
+        async with req as response:
+            result = await response.json()
+            expanded = jsonld.expand(result)
+            datasets = expanded[0]['http://www.w3.org/ns/dcat#dataset'][0]['@list']
+            if len(datasets) > 0:
+                return [{
+                    "label": "Datasets",
+                    "content": [
+                        {
+                            '_display': d['http://purl.org/dc/terms/title'][0]['@value'],
+                            'uri': urllib.parse.urlparse(d['@id']).path[1:]
+                        }
+                        for d in datasets ]
+                }]
+        return []
+
+
+class Typeahead(SearchEndpoint):
+
+    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
+        headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}
+        session = await self.session
+        req = session.get(self.url, timeout=self.read_timeout, params={'q': q},
+                          headers=headers)
+        async with req as response:
+            result = await response.json()
+            if len(result) > 0:
+                if 'content' in result[0]:
+                    if len(result[0]['content']) > 0:
+                        if len(result[0]['content']) > self.max_results:
+                            result[0]['content'] = result[0]['content'][:self.max_results]
+                        return result
+        return []

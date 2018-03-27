@@ -22,12 +22,9 @@ node {
         checkout scm
     }
 
-    stage('Test') {
+    stage("Test") {
         tryStep "test", {
-            sh "docker-compose -p typeahead -f docker-compose.yml build && " +
-               "docker-compose -p typeahead -f docker-compose.yml run -u root --rm typeahead python -m unittest discover -s /app/typeahead/"
-        }, {
-            sh "docker-compose -p panorama -f docker-compose.yml down"
+            sh "docker build -f Dockerfile.test -t typeahead:test ."
         }
     }
 
@@ -55,9 +52,9 @@ if (BRANCH == "master") {
 
     node {
         stage("Deploy to ACC") {
-            tryStep "deployment", {
-                build job: 'Subtask_Openstack_Playbook',
-                parameters: [
+        tryStep "deployment", {
+            build job: 'Subtask_Openstack_Playbook',
+            parameters: [
                     [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
                     [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-typeahead.yml'],
                 ]
@@ -67,15 +64,15 @@ if (BRANCH == "master") {
 
 
     stage('Waiting for approval') {
-        slackSend channel: '#ci-channel', color: 'warning', message: 'Typeahead is waiting for Production Release - please confirm'
+        slackSend channel: '#ci-channel', color: 'warning', message: 'typeahead service is waiting for Production Release - please confirm'
         input "Deploy to Production?"
     }
 
     node {
         stage('Push production image') {
-            tryStep "image tagging", {
-                def image = docker.image("build.datapunt.amsterdam.nl:5000/datapunt/typeahead:${env.BUILD_NUMBER}")
-                image.pull()
+        tryStep "image tagging", {
+            def image = docker.image("build.datapunt.amsterdam.nl:5000/datapunt/typeahead:${env.BUILD_NUMBER}")
+            image.pull()
                 image.push("production")
                 image.push("latest")
             }

@@ -1,0 +1,75 @@
+web:
+  port: ${PORT:-8080}
+  baseurl: ${BASEURL:-http://localhost:8080}
+
+global_search_config:
+  default_read_timeout: 0.5
+  connect_timeout: 0.1
+  min_query_length: 3
+  max_results_per_endpoint: 1
+
+search_endpoints:
+- type: Typeahead
+  url: https://api.data.amsterdam.nl/atlas/typeahead/bag/
+- type: Typeahead
+  url: https://api.data.amsterdam.nl/handelsregister/typeahead/
+- type: Typeahead
+  url: https://api.data.amsterdam.nl/atlas/typeahead/brk/
+- type: Typeahead
+  url: https://api.data.amsterdam.nl/atlas/typeahead/gebieden/
+- type: Typeahead
+  url: https://api.data.amsterdam.nl/meetbouten/typeahead/
+- type: DCATAms
+  url: https://acc.api.data.amsterdam.nl/dcatd/datasets
+- type: CKAN
+  url: https://api.data.amsterdam.nl/catalogus/api/3/action/package_search
+- type: Typeahead
+  url: https://api.data.amsterdam.nl/monumenten/typeahead/
+
+logging:
+  formatters:
+    default:
+      format: '%(asctime)s %(levelname)-8s %(module)s:%(lineno)d: %(message)s'
+  handlers:
+    aiohttp.access:
+      class: logging.StreamHandler
+    console:
+      class: logging.StreamHandler
+      formatter: default
+  loggers:
+    # See also: <http://aiohttp.readthedocs.io/en/stable/logging.html>
+    aiohttp:
+      propagate: true
+    aiohttp.*:
+      propagate: true
+    aiohttp.access:
+      handlers:
+      - aiohttp.access
+      level: ${LOGLEVEL:-DEBUG}
+      propagate: false
+    aiohttp_extras:
+      handlers:
+      - console
+      level: ${LOGLEVEL:-DEBUG}
+      propagate: false
+
+    config_loader:
+      handlers:
+      - console
+      level: ${LOGLEVEL:-DEBUG}
+      propagate: false
+    typeahead:
+      handlers:
+      - console
+      level: ${LOGLEVEL:-DEBUG}
+      propagate: false
+    plugin.storage.postgres:
+      handlers:
+      - console
+      level: ${LOGLEVEL:-DEBUG}
+      propagate: false
+  root:
+    handlers:
+    - console
+    level: ${LOGLEVEL:-WARNING}
+  version: 1

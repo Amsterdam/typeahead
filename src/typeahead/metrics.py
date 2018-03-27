@@ -1,0 +1,6 @@
+from prometheus_client import Counter, Summary
+
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request.')
+ENDPOINT_SEARCHTIME = Summary('endpoint_searchtime_seconds', 'Time spent searching an endpoint.', ['endpoint'])
+SEARCH_EXC_COUNTER = Counter('search_exceptions_total', 'Counter of all exceptions that occur during search.', ['exc_type', 'endpoint'])
+SEARCH_RESP_COUNTER = Counter('search_responses_total', 'Counter of all exceptions that occur during search.', ['status', 'endpoint'])

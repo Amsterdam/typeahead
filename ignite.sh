@@ -9,7 +9,7 @@ METADATA_URL=http://${METADATA_HOST}:${METADATA_PORT}/latest/meta-data/local-ipv
 
 export DOCKER_IP=$(hostname --ip-address)
 
-#Check connectivity
+# Check connectivity
 curl -s -m1 ${METADATA_URL} || exitcode=$?
 if [ -n "${exitcode+set}" ]; then
   export DOCKER_EXTERNAL_IP=${DOCKER_IP}
@@ -21,4 +21,4 @@ if [ "${CONSUL_HOST:-notset}" == 'notset' ]; then
     export CONSUL_HOST=${DOCKER_EXTERNAL_IP}
 fi
 
-uwsgi
+uwsgi --gevent 100 -i

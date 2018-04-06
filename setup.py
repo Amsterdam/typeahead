@@ -48,9 +48,6 @@ setup(
     # ┃ Requirements ┃
     # ┗━━━━━━━━━━━━━━┛
     python_requires='~=3.6',
-    setup_requires=[
-        'pytest-runner'
-    ],
     install_requires=[
         'aiohttp',
         'aiohttp_cors',

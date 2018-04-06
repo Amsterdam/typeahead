@@ -1,4 +1,4 @@
-.PHONY: .test_requirements test cov install dist upload example clean
+.PHONY: test cov install install-test install-dev uninstall example clean
 
 RM = rm -rf
 PYTHON = python3
@@ -8,59 +8,39 @@ PYTHON = python3
 # ┃ Testing ┃
 # ┗━━━━━━━━━┛
 
-PYTEST = $(PYTHON) setup.py test
+PYTEST = py.test
 PYTEST_COV_OPTS ?= --cov=src --cov-report=term --no-cov-on-fail
 
-
-test: cleanpy
+test: clean
 	$(PYTEST)
 
-
-cov: cleanpy
+cov: clean
 	$(PYTEST) $(PYTEST_COV_OPTS)
-
-
-testdep:
-	pip3 install --quiet --upgrade --upgrade-strategy eager -e .[test] && echo 'OK' || echo 'FAILED'
-
-
-testclean: cleanpy
-	@$(RM) .cache .coverage
-
 
 # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 # ┃ Installing, building, running ┃
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-install: cleanpy
-	@echo -n 'Installing... '
-	@pip3 install --quiet --upgrade --upgrade-strategy eager -e . && echo 'OK' || echo 'FAILED'
+install: clean
+	pip3 install --quiet --upgrade --upgrade-strategy eager -e .
 
-dist: cleanpy
-	$(PYTHON) setup.py sdist
+install-test: clean
+	pip3 install --quiet --upgrade --upgrade-strategy eager -e .[test]
 
-upload: cleanpy
-	$(PYTHON) setup.py sdist upload
+install-dev: install-test
+	pip3 install --quiet --upgrade --upgrade-strategy eager -e .[dev]
 
-example: cleanpy
-	@echo Starting example server
-	@python -m typeahead.main --config example.config.yml
+uninstall:
+	pip3 uninstall -y typeahead && $(RM) src/typeahead.egg-info
+
+example: clean
+	python -m typeahead.main --config example.config.yml
 
 
 # ┏━━━━━━━━━━━━━┓
 # ┃ Cleaning up ┃
 # ┗━━━━━━━━━━━━━┛
 
-cleanpy:
-	@echo Removing pyc and pyo files
-	@find . -type f -name '*.py[co]' -exec rm {} \;
-
 clean:
-	@# From running pytest:
+	find . -type f -name '*.py[co]' -exec rm {} \;
 	$(RM) .coverage .cache
-
-	@# From `pip3 install -e .`:
-	-pip3 uninstall -y datacatalog-core && $(RM) src/datacatalog_core.egg-info
-
-	@# From `setup.py sdist`:
-	$(RM) dist

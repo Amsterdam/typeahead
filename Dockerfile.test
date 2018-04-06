@@ -3,5 +3,4 @@ FROM python:3.6-slim
     COPY . /root/app
     RUN apt-get update
     RUN apt-get install make
-    RUN pip install .[test]
-    RUN make test
+    RUN make install-test test

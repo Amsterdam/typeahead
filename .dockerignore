@@ -1,0 +1,12 @@
+# ignore all...
+*
+
+# except a few
+!src
+!tests
+!setup.py
+!setup.cfg
+!README.md
+!LICENSE
+!Makefile
+!**/*.yml

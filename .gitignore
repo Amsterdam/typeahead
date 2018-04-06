@@ -1,13 +1,8 @@
-# IntelliJ:
-/.idea/**
-/*.iml
-
 # Python ephemerals:
 **/__pycache__/
 **/*.pyc
 *.egg-info
 .eggs
-.venv
 
-# Test and Example side-effects:
+# Test side-effects:
 /.cache/

@@ -51,6 +51,7 @@ setup(
     install_requires=[
         'aiohttp',
         'aiohttp_cors',
+        'graypy',
         'jsonschema',
         'prometheus_client',
         'pyyaml',

@@ -10,4 +10,5 @@ async def get(request):
     if 'name' in request.query:
         registry = registry.restricted_registry(request.query['name'])
     output = exposition.generate_latest(registry)
-    return web.Response(body=output, content_type='text/plain; version=0.0.4', charset='utf-8')
+    return web.Response(body=output, content_type='text/plain',
+                        charset='utf-8', headers={'version': '0.0.4'})

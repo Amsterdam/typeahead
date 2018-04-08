@@ -5,27 +5,30 @@ import aiohttp.client
 import aiohttp.client_exceptions
 from pyld import jsonld
 
-from typeahead import metrics
+from typeahead import application, metrics
 
 
 class SearchEndpoint:
 
-    def __init__(self, connect_timeout: int, max_results: int,
-                 url: str, read_timeout: T.Optional[float]):
+    def __init__(self, app, connect_timeout: int,
+                 max_results: int, url: str, read_timeout: T.Optional[float]):
         self.connect_timeout = connect_timeout
         self.max_results = max_results
         self.url = url
         self.read_timeout = read_timeout
         # placeholder (each endpoint gets an own connection pool)
-        self._session = None
+        self.session: aiohttp.client.ClientSession = None
+        # make sure everything is initialized and cleaned up
+        app.on_startup.append(self.initialize)
+        app.on_cleanup.append(self.deinitialize)
 
-    @property
-    async def session(self):
-        if self._session is None:
-            self._session = aiohttp.client.ClientSession(
-                conn_timeout=self.connect_timeout, raise_for_status=True
-            )
-        return self._session
+    async def initialize(self, app):
+        self.session = aiohttp.client.ClientSession(
+            conn_timeout=self.connect_timeout, raise_for_status=True
+        )
+
+    async def deinitialize(self, app):
+        await self.session.close()
 
     async def wrappedsearch(self, *args, **kwargs):
         u = self.url
@@ -46,8 +49,7 @@ class SearchEndpoint:
 class CKAN(SearchEndpoint):
 
     async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
-        session = await self.session
-        req = session.get(
+        req = self.session.get(
             self.url, timeout=self.read_timeout, params={'q': q, 'rows': self.max_results}
         )
         async with req as response:
@@ -70,8 +72,7 @@ class DCATAms(SearchEndpoint):
 
     async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
         headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}
-        session = await self.session
-        req = session.get(
+        req = self.session.get(
             self.url, timeout=self.read_timeout, headers=headers,
             params={'q': q, 'limit': self.max_results}
         )
@@ -96,8 +97,7 @@ class Typeahead(SearchEndpoint):
 
     async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
         headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}
-        session = await self.session
-        req = session.get(self.url, timeout=self.read_timeout, params={'q': q},
+        req = self.session.get(self.url, timeout=self.read_timeout, params={'q': q},
                           headers=headers)
         async with req as response:
             result = await response.json()

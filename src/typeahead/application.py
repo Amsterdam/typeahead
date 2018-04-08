@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 _OPENAPI_SCHEMA_RESOURCE = 'openapi.yml'
 _CONFIG_SCHEMA_RESOURCE = 'config_schema.yml'
 
+
 class Application(web.Application):
     # language=rst
     """The Application.
@@ -59,7 +60,7 @@ class Application(web.Application):
 
     def _search_endpoints(self):
         # language=rst
-        """ Get (and cache) the search endpoints from the configuration.
+        """ Get the search endpoints from the configuration.
         """
 
         endpoints = []
@@ -74,6 +75,6 @@ class Application(web.Application):
             read_timeout = endpointconf.get('read_timeout', search_conf['default_read_timeout'])
             url = endpointconf['url']
             endpoints.append(
-                endpoint_clz(connect_timeout, max_results, url, read_timeout)
+                endpoint_clz(self, connect_timeout, max_results, url, read_timeout)
             )
         return endpoints

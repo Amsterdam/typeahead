@@ -10,7 +10,7 @@ setup(
     # ┃ Publication Metadata ┃
     # ┗━━━━━━━━━━━━━━━━━━━━━━┛
     version='1.0.0',
-    name='typeahead',
+    name='datapunt-typeahead',
     description="Amsterdam Datapunt Typeahead",
     # TODO:
     # long_description="""

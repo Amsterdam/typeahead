@@ -6,7 +6,7 @@ from typeahead import metrics
 
 async def get(request):
     # language=rst
-    """Run search.
+    """Run search. Swallows all downstream exceptions.
     """
     with metrics.REQUEST_TIME.time():
         q = request.query.get('q', '').strip()

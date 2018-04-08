@@ -52,13 +52,17 @@ logging:
       - console
       level: ${LOGLEVEL:-DEBUG}
       propagate: false
-
     config_loader:
       handlers:
       - console
       level: ${LOGLEVEL:-DEBUG}
       propagate: false
     typeahead:
+      handlers:
+      - console
+      level: ${LOGLEVEL:-DEBUG}
+      propagate: false
+    typeahead.metrics:
       handlers:
       - console
       level: ${LOGLEVEL:-DEBUG}

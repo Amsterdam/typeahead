@@ -1,3 +1,4 @@
+import logging
 import typing as T
 import urllib.parse
 
@@ -7,6 +8,8 @@ import aiohttp.web
 from pyld import jsonld
 
 from typeahead import metrics
+
+_logger = logging.getLogger(__name__)
 
 
 class SearchEndpoint:
@@ -41,6 +44,7 @@ class SearchEndpoint:
             raise
         except Exception as e:
             metrics.SEARCH_EXC_COUNTER.labels(exc_type=repr(e), endpoint=u).inc()
+            _logger.exception('Error querying {}'.format(u))
             raise
 
     async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:

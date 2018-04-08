@@ -1,7 +1,6 @@
 import logging
-import pathlib
 from pkg_resources import resource_filename, resource_stream
-import urllib
+import urllib.parse
 
 from aiohttp import web
 import aiohttp_cors
@@ -26,7 +25,7 @@ class Application(web.Application):
 
         # Initialize config
         schema_filename = resource_filename(__name__, _CONFIG_SCHEMA_RESOURCE)
-        self._config = config_loader.load(config_path, pathlib.Path(schema_filename))
+        self._config = config_loader.load(config_path, schema_filename)
 
         # set base path on app
         path = urllib.parse.urlparse(self._config['web']['baseurl']).path
@@ -52,7 +51,6 @@ class Application(web.Application):
         cors.add(self.router.add_get(path[:-1], handlers.search.get))
         cors.add(self.router.add_get(path + 'openapi', handlers.openapi.get))
         self.router.add_get('/metrics', handlers.metrics.get)
-
 
     @property
     def config(self) -> dict:

@@ -2,6 +2,7 @@ import argparse
 import asyncio
 
 from aiohttp import web
+from aiohttp.web import normalize_path_middleware
 import uvloop
 
 from typeahead import application
@@ -15,7 +16,8 @@ def run():
     args = parser.parse_args()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    aio_app = application.Application(args.config)
+    aio_app = application.Application(
+        args.config, middlewares=[normalize_path_middleware])
     web.run_app(aio_app, port=aio_app.config['web']['port'])
     return 0
 

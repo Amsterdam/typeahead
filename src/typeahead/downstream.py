@@ -3,14 +3,15 @@ import urllib.parse
 
 import aiohttp.client
 import aiohttp.client_exceptions
+import aiohttp.web
 from pyld import jsonld
 
-from typeahead import application, metrics
+from typeahead import metrics
 
 
 class SearchEndpoint:
 
-    def __init__(self, app, connect_timeout: int,
+    def __init__(self, app: aiohttp.web.Application, connect_timeout: int,
                  max_results: int, url: str, read_timeout: T.Optional[float]):
         self.connect_timeout = connect_timeout
         self.max_results = max_results

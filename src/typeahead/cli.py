@@ -17,7 +17,7 @@ def run():
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     aio_app = application.Application(
-        args.config, middlewares=[normalize_path_middleware])
+        args.config, middlewares=[normalize_path_middleware()])
     web.run_app(aio_app, port=aio_app.config['web']['port'])
     return 0
 

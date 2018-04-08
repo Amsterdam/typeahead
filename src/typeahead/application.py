@@ -1,16 +1,19 @@
 import logging
-from pkg_resources import resource_stream
+import pathlib
+from pkg_resources import resource_filename, resource_stream
 import urllib
 
 from aiohttp import web
 import aiohttp_cors
+import config_loader
 import yaml
 
-from . import config, downstream, handlers
+from . import downstream, handlers
 
 logger = logging.getLogger(__name__)
 
 _OPENAPI_SCHEMA_RESOURCE = 'openapi.yml'
+_CONFIG_SCHEMA_RESOURCE = 'config_schema.yml'
 
 class Application(web.Application):
     # language=rst
@@ -20,8 +23,9 @@ class Application(web.Application):
     def __init__(self, config_path, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Initialize config:
-        self._config = config.load(config_path)
+        # Initialize config
+        schema_filename = resource_filename(__name__, _CONFIG_SCHEMA_RESOURCE)
+        self._config = config_loader.load(config_path, pathlib.Path(schema_filename))
 
         # set base path on app
         path = urllib.parse.urlparse(self._config['web']['baseurl']).path
@@ -50,7 +54,7 @@ class Application(web.Application):
 
 
     @property
-    def config(self) -> config.ConfigDict:
+    def config(self) -> dict:
         return self._config
 
     def _search_endpoints(self):

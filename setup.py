@@ -28,7 +28,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'typeahead=typeahead.main:main'
+            'typeahead=typeahead.cli:run'
         ]
     },
 
@@ -51,6 +51,7 @@ setup(
     install_requires=[
         'aiohttp',
         'aiohttp_cors',
+        'datapunt_config_loader',
         'graypy',
         'jsonschema',
         'prometheus_client',

@@ -7,7 +7,7 @@ import uvloop
 from typeahead import application
 
 
-def main():
+def run():
     parser = argparse.ArgumentParser(description='Typeahead service')
     parser.add_argument(
         '--config', '-c', action='store', metavar='path_to_configfile', required=True,
@@ -21,4 +21,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run()

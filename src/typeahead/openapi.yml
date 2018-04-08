@@ -3,10 +3,11 @@ openapi: '3.0.0'
 
 info:
   title: Typeahead
-  version: '2.0.0-alpha'
+  version: '2.0.0'
 
 
 paths:
+
   /:
     get:
       description: >-
@@ -17,7 +18,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/result-list'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    content:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          _display:
+                            type: string
+                          uri:
+                            type: string
+                    label:
+                      type: string
       parameters:
       - name: q
         in: query
@@ -26,10 +41,14 @@ paths:
         schema:
           type: string
 
-components:
-
-  schemas:
-    result-list:
-      type: array
-      items:
-        type: string
+  /openapi:
+    get:
+      description: >-
+        Get the OpenAPI spec for this service.
+      responses:
+        200:
+          description: OpenAPI spec.
+          content:
+            application/json:
+              schema:
+                $ref: "http://json-schema.org/draft-04/schema#"

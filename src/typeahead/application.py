@@ -1,4 +1,4 @@
-import logging
+import logging.config
 from pkg_resources import resource_filename, resource_stream
 import urllib.parse
 
@@ -26,6 +26,9 @@ class Application(web.Application):
         # Initialize config
         schema_filename = resource_filename(__name__, _CONFIG_SCHEMA_RESOURCE)
         self._config = config_loader.load(config_path, schema_filename)
+
+        # logging config
+        logging.config.dictConfig(self._config['logging'])
 
         # set base path on app
         path = urllib.parse.urlparse(self._config['web']['baseurl']).path

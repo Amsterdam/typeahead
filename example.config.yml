@@ -25,6 +25,7 @@ search_endpoints:
   url: https://api.data.amsterdam.nl/catalogus/api/3/action/package_search
 - type: Typeahead
   url: https://api.data.amsterdam.nl/monumenten/typeahead/
+  max_results: 6
 
 logging:
   formatters:

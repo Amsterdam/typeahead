@@ -65,13 +65,13 @@ class Application(web.Application):
         endpoints = []
         # read default conf
         search_conf = self.config['global_search_config']
-        max_results = search_conf['max_results_per_endpoint']
         connect_timeout = search_conf['connect_timeout']
 
         # grab all configured endpoints
         for endpointconf in self.config['search_endpoints']:
             endpoint_clz = getattr(downstream, endpointconf['type'])
             read_timeout = endpointconf.get('read_timeout', search_conf['default_read_timeout'])
+            max_results = endpointconf.get('max_results', search_conf['max_results_per_endpoint'])
             url = endpointconf['url']
             endpoints.append(
                 endpoint_clz(self, connect_timeout, max_results, url, read_timeout)

@@ -3,4 +3,4 @@ FROM python:3.6-slim
     RUN apt-get install make
     WORKDIR /root/app
     COPY . /root/app
-    RUN make install-test test
+    RUN make install-test cov

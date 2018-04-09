@@ -10,7 +10,7 @@ global_search_config:
 
 search_endpoints:
 - type: Typeahead
-  url: htps://api.data.amsterdam.nl/atlas/typeahead/bag/
+  url: https://api.data.amsterdam.nl/atlas/typeahead/bag/
 - type: Typeahead
   url: https://api.data.amsterdam.nl/handelsregister/typeahead/
 - type: Typeahead

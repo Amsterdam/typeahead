@@ -56,7 +56,7 @@ if (BRANCH == "master") {
             build job: 'Subtask_Openstack_Playbook',
             parameters: [
                     [$class: 'StringParameterValue', name: 'INVENTORY', value: 'acceptance'],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-typeahead-asyncio.yml'],
+                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-typeahead.yml'],
                 ]
             }
         }
@@ -85,7 +85,7 @@ if (BRANCH == "master") {
                 build job: 'Subtask_Openstack_Playbook',
                 parameters: [
                     [$class: 'StringParameterValue', name: 'INVENTORY', value: 'production'],
-                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-typeahead-asyncio.yml'],
+                    [$class: 'StringParameterValue', name: 'PLAYBOOK', value: 'deploy-typeahead.yml'],
                 ]
             }
         }

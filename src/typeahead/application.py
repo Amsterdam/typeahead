@@ -49,6 +49,7 @@ class Application(web.Application):
 
         # set routes
         cors.add(self.router.add_get(path, handlers.search.get))
+        cors.add(self.router.add_get(path[:-1], handlers.search.get))
         cors.add(self.router.add_get(path + 'openapi', handlers.openapi.get))
         self.router.add_get('/metrics', handlers.metrics.get)
 

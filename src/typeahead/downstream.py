@@ -104,12 +104,14 @@ class Typeahead(SearchEndpoint):
         headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}
         req = self.session.get(self.url, timeout=self.read_timeout, params={'q': q},
                           headers=headers)
+        results = []
         async with req as response:
             result = await response.json()
             if len(result) > 0:
-                if 'content' in result[0]:
-                    if len(result[0]['content']) > 0:
-                        if len(result[0]['content']) > self.max_results:
-                            result[0]['content'] = result[0]['content'][:self.max_results]
-                        return result
-        return []
+                for r in result:
+                    if 'content' in r:
+                        if len(r['content']) > 0:
+                            if len(r['content']) > self.max_results:
+                                r['content'] = r['content'][:self.max_results]
+                            results.append(r)
+        return results

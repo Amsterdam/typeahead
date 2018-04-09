@@ -39,8 +39,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages('src'),
     package_data={
-        'typeahead': ['*.yml'],
-        'typeahead.handlers': ['*.yml'],
+        'typeahead': ['*.yml']
     },
 
 

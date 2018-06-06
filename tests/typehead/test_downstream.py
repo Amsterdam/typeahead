@@ -20,13 +20,6 @@ async def server(aiohttp_server):
     return await aiohttp_server(application.Application(config_path))
 
 
-async def test_ckan_endpoint(monkeypatch, server):
-    endpoints = [e for e in server.app['search_endpoints'] if type(e) if downstream.CKAN]
-    for e in endpoints:
-        monkeypatch.setattr(e.session, 'get', _downstream_get_func([]))
-        #assert (await e.search('q', None)) == []
-
-
 async def test_dcatd_endpoint(monkeypatch, server):
     endpoints = [e for e in server.app['search_endpoints'] if type(e) if downstream.DCATAms]
     for e in endpoints:

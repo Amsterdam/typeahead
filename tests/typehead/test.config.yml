@@ -13,8 +13,6 @@ search_endpoints:
   url: http://typeahead/
 - type: DCATAms
   url: http://dcat/
-- type: CKAN
-  url: http://ckan/
 
 logging:
   formatters:

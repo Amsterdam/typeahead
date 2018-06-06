@@ -51,28 +51,6 @@ class SearchEndpoint:
         raise NotImplementedError()
 
 
-class CKAN(SearchEndpoint):
-
-    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
-        req = self.session.get(
-            self.url, timeout=self.read_timeout, params={'q': q, 'rows': self.max_results}
-        )
-        async with req as response:
-            result = await response.json()
-            datasets = result['result']['results']
-            if len(datasets) > 0:
-                return [{
-                    "label": "Datasets",
-                    "content": [
-                        {
-                            '_display': d['title'],
-                            'uri': f"catalogus/api/3/action/package_show?id={d['id']}"
-                        }
-                        for d in datasets ]
-                }]
-        return []
-
-
 class DCATAms(SearchEndpoint):
 
     async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:

@@ -1,6 +1,7 @@
 web:
   port: ${PORT:-8080}
   baseurl: ${BASEURL:-http://localhost:8080}
+  allow_cors: true
 
 global_search_config:
   default_read_timeout: 0.5
@@ -21,8 +22,6 @@ search_endpoints:
   url: https://api.data.amsterdam.nl/meetbouten/typeahead/
 - type: DCATAms
   url: https://acc.api.data.amsterdam.nl/dcatd/datasets
-- type: CKAN
-  url: https://api.data.amsterdam.nl/catalogus/api/3/action/package_search
 - type: Typeahead
   url: https://api.data.amsterdam.nl/monumenten/typeahead/
   max_results: 6

@@ -43,18 +43,23 @@ class Application(web.Application):
         # set search endpoints on app
         self['search_endpoints'] = self._search_endpoints()
 
-        # CORS
-        cors = aiohttp_cors.setup(self, defaults={
-            '*': aiohttp_cors.ResourceOptions(
-                expose_headers="*", allow_headers="*"
-            ),
-        })
-
-        # set routes
-        cors.add(self.router.add_get(path, handlers.search.get))
-        cors.add(self.router.add_get(path[:-1], handlers.search.get))
-        cors.add(self.router.add_get(path + 'openapi', handlers.openapi.get))
+        # add routes
         self.router.add_get('/metrics', handlers.metrics.get)
+        search_route = self.router.add_get(path, handlers.search.get)
+        search_route_no_slash = self.router.add_get(path[:-1], handlers.search.get)
+        openapi_route = self.router.add_get(path + 'openapi', handlers.openapi.get)
+
+        # CORS
+        if 'allow_cors' in self._config['web'] and self._config['web']['allow_cors']:
+            cors = aiohttp_cors.setup(self, defaults={
+                '*': aiohttp_cors.ResourceOptions(
+                    expose_headers="*", allow_headers="*"
+                ),
+            })
+            cors.add(search_route)
+            cors.add(search_route_no_slash)
+            cors.add(openapi_route)
+
 
     @property
     def config(self) -> dict:

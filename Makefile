@@ -34,7 +34,7 @@ uninstall:
 	pip3 uninstall -y typeahead && $(RM) src/typeahead.egg-info
 
 example: clean
-	python -m typeahead.main --config example.config.yml
+	python -m typeahead.cli --config example.config.yml
 
 
 # ┏━━━━━━━━━━━━━┓

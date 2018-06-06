@@ -28,7 +28,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'typeahead=typeahead.cli:run'
+            'typeahead=typeahead.main:run'
         ]
     },
 

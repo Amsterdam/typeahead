@@ -61,17 +61,19 @@ class DCATAms(SearchEndpoint):
         )
         async with req as response:
             result = await response.json()
-            expanded = jsonld.expand(result)
-            datasets = expanded[0]['http://www.w3.org/ns/dcat#dataset'][0]['@list']
+#            expanded = jsonld.expand(result)
+#            datasets = expanded[0]['http://www.w3.org/ns/dcat#dataset'][0]['@list']
+            datasets = result['dcat:dataset']
             if len(datasets) > 0:
                 return [{
                     "label": "Datasets",
                     "content": [
                         {
-                            '_display': d['http://purl.org/dc/terms/title'][0]['@value'],
+#                            '_display': d['http://purl.org/dc/terms/title'][0]['@value'],
+                            '_display': d['dct:title'],
                             'uri': urllib.parse.urlparse(d['@id']).path[1:]
                         }
-                        for d in datasets ]
+                        for d in datasets]
                 }]
         return []
 

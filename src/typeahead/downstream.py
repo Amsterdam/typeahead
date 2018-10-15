@@ -64,7 +64,8 @@ class DCATAms(SearchEndpoint):
             expanded = jsonld.expand(result)
             datasets = expanded[0]['http://www.w3.org/ns/dcat#dataset'][0]['@list']
             if len(datasets) > 0:
-                return [{
+                total_results = expanded[0]['http://rdfs.org/ns/void#documents'][0]['@value']
+                result_dict = {
                     "label": "Datasets",
                     "content": [
                         {
@@ -72,7 +73,11 @@ class DCATAms(SearchEndpoint):
                             'uri': urllib.parse.urlparse(d['@id']).path[1:]
                         }
                         for d in datasets]
-                }]
+                }
+                if total_results and total_results > self.max_results:
+                    result_dict['total_results'] = total_results
+
+                return [result_dict]
         return []
 
 

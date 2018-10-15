@@ -90,6 +90,7 @@ class Typeahead(SearchEndpoint):
                     if 'content' in r:
                         if len(r['content']) > 0:
                             if len(r['content']) > self.max_results:
+                                r['total_results'] = len(r['content'])
                                 r['content'] = r['content'][:self.max_results]
                             results.append(r)
         return results

@@ -72,12 +72,11 @@ class DCATAms(SearchEndpoint):
                             '_display': d['http://purl.org/dc/terms/title'][0]['@value'],
                             'uri': urllib.parse.urlparse(d['@id']).path[1:]
                         }
-                        for d in datasets]
+                        for d in datasets],
+                    "total_results": total_results
                 }
-                if total_results and total_results > self.max_results:
-                    result_dict['total_results'] = total_results
-
                 return [result_dict]
+
         return []
 
 
@@ -93,9 +92,11 @@ class Typeahead(SearchEndpoint):
             if len(result) > 0:
                 for r in result:
                     if 'content' in r:
-                        if len(r['content']) > 0:
-                            if len(r['content']) > self.max_results:
-                                r['total_results'] = len(r['content'])
+                        l = len(r['content'])
+                        if l > 0:
+                            if 'total_results' not in r: # Monumenten endpoint should include its own total_results
+                                r['total_results'] = l
+                            if l > self.max_results:
                                 r['content'] = r['content'][:self.max_results]
                             results.append(r)
         return results

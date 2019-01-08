@@ -46,7 +46,7 @@ setup(
     # ┏━━━━━━━━━━━━━━┓
     # ┃ Requirements ┃
     # ┗━━━━━━━━━━━━━━┛
-    python_requires='~=3.6',
+    python_requires='~=3.7',
     install_requires=[
         'aiohttp',
         'aiohttp_cors',
@@ -60,6 +60,7 @@ setup(
         # Recommended by aiohttp docs:
         'aiodns',    # optional asynchronous DNS client
         'uvloop',    # optional fast eventloop for asyncio
+        'sentry-sdk',
     ],
     extras_require={
         'dev': [

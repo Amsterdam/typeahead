@@ -1,9 +1,13 @@
 import argparse
 import asyncio
+import os
 
 from aiohttp import web
 from aiohttp.web import normalize_path_middleware
 import uvloop
+import sentry_sdk
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+
 
 from typeahead import application
 
@@ -14,6 +18,13 @@ def run():
         '--config', '-c', action='store', metavar='path_to_configfile', required=True,
         help='Specify the path to your configuration file.')
     args = parser.parse_args()
+
+    sentry_dsn = os.getenv('SENTRY_DSN')
+    if sentry_dsn:
+        sentry_sdk.init(
+            dsn=sentry_dsn,
+            integrations=[AioHttpIntegration()]
+        )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     aio_app = application.Application(

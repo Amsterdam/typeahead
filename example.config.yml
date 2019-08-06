@@ -7,7 +7,9 @@ global_search_config:
   default_read_timeout: 0.5
   connect_timeout: 0.1
   min_query_length: 3
-  max_results_per_endpoint: 3
+  max_results_per_endpoint: 12
+  results_type: equal_until_max
+  total_max_results: 15
 
 search_endpoints:
 - type: Typeahead

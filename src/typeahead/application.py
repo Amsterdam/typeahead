@@ -38,7 +38,7 @@ class Application(web.Application):
 
         # set openapi spec on app
         with resource_stream(__name__, _OPENAPI_SCHEMA_RESOURCE) as s:
-            self['openapi'] = yaml.load(s)
+            self['openapi'] = yaml.load(s, Loader=yaml.FullLoader)
 
         # set search endpoints on app
         self['search_endpoints'] = self._search_endpoints()

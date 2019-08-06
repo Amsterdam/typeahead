@@ -84,7 +84,7 @@ class Typeahead(SearchEndpoint):
 
     async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
         headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}
-        req = self.session.get(self.url, timeout=self.read_timeout, params={'q': q},
+        req = self.session.get(self.url, timeout=self.read_timeout, params={'q': q, 'limit': self.max_results},
                           headers=headers)
         results = []
         async with req as response:

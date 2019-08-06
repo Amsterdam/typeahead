@@ -34,6 +34,10 @@ definitions:
         type: integer
       max_results_per_endpoint:
         type: integer
+      results_type:
+        type: string
+      total_max_results:
+        type: integer
     required:
     - default_read_timeout
     - connect_timeout

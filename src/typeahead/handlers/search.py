@@ -29,12 +29,10 @@ async def get(request):
             # From each top level entry we will repeatedly take one item to till we have total_max_results items
             # But the original order needs to remain the same
             total_max_results = request.app.config['global_search_config'].get('total_max_results', 15)
-            new_results = list(map(
-                lambda x: {'label': x['label'], 'content': [], 'total_results': x['total_results']}, results))
-            max_content_results = max(map(lambda x: len(x['content']), results))
-            total_results = 0
-            top_level_index = 0
-            content_index = 0
+            max_content_results = max([len(x['content']) for x in results])
+            new_results = [{'label': x['label'], 'content': [], 'total_results': x['total_results']} for x in results]
+
+            total_results = top_level_index = content_index = 0
             while total_results < total_max_results and content_index < max_content_results:
                 if content_index < len(results[top_level_index]['content']):
                     new_results[top_level_index]['content'].append(results[top_level_index]['content'][content_index])

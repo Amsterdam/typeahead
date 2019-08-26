@@ -50,6 +50,7 @@ setup(
     install_requires=[
         'aiohttp',
         'aiohttp_cors',
+        'aioelasticsearch',
         'datapunt_config_loader',
         'graypy',
         'jsonschema',

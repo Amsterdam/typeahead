@@ -1,10 +1,12 @@
 import logging
 import typing as T
 import urllib.parse
+from collections import defaultdict
 
 import aiohttp.client
 import aiohttp.client_exceptions
 import aiohttp.web
+from aioelasticsearch import Elasticsearch
 from pyld import jsonld
 
 from typeahead import metrics
@@ -100,3 +102,89 @@ class Typeahead(SearchEndpoint):
                                 r['content'] = r['content'][:self.max_results]
                             results.append(r)
         return results
+
+
+class DrupalElasticSearch(SearchEndpoint):
+
+    async def initialize(self, app):
+        self.session = Elasticsearch(
+            sniff_timeout = self.read_timeout  # default 0.1
+        )
+
+    async def deinitialize(self, app):
+        await self.session.close()
+
+    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
+
+        # Default localhost 9200. Index is last part of path
+        index = self.url.split('/')[-1]
+        base_url = '/'.join(self.url.split('/')[0:-1])
+        drupal_selector = '/jsonapi/node/'
+        from1 = 0
+        size = 15
+
+        body = f"""
+{{
+  "query": {{
+    "bool": {{
+      "must": [],
+      "must_not": [],
+      "should": [
+        {{
+          "prefix": {{
+            "title": {{
+              "value" : "{q}",
+              "boost": 4.0
+             }}
+          }}
+        }},  
+        {{
+          "term": {{
+            "processed": {{
+               "value": "{q}",
+                "boost": 0.5
+             }}
+          }}
+        }}
+      ],
+      "filter": {{
+        "terms" : {{ "type" : ["publication", "article"] }}
+      }},
+      "minimum_should_match" : 1
+    }}
+  }},
+  "from": {from1},
+  "size": {size},
+  "sort": [],
+  "aggs": {{
+    "count_by_type": {{
+      "terms": {{
+        "field": "type"
+        }}
+     }}
+  }}
+}}
+"""
+        # query = q + '*'
+        label_map = {
+            'publication': "Publications",
+            'article': 'Articles'
+        }
+        response = await self.session.search(index=index, body=body, size=self.max_results)
+        buckets = defaultdict(list)
+        total_results = { elem['key']: elem['doc_count'] for elem in response['aggregations']['count_by_type']['buckets']}
+        if 'hits' in response and len(response['hits']['hits']) > 0:
+            for hit in response['hits']['hits']:
+                buckets[hit['_source']['type'][0]].append({
+                    '_display': hit['_source']['field_short_title'][0],
+                    'uri': f"{base_url}{drupal_selector}{hit['_source']['type'][0]}/{hit['_source']['uuid'][0]}",
+                })
+
+            result_list = [{
+                "label": label_map[key],
+                "content": value,
+                "total_results": total_results[key]
+              } for key,value in buckets.items()]
+            return result_list
+        else:
+            return []

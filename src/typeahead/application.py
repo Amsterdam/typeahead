@@ -1,4 +1,6 @@
 import logging.config
+from typing import List
+
 from pkg_resources import resource_filename, resource_stream
 import urllib.parse
 
@@ -16,9 +18,7 @@ _CONFIG_SCHEMA_RESOURCE = 'config_schema.yml'
 
 
 class Application(web.Application):
-    # language=rst
-    """The Application.
-    """
+    """The AIOHTTP Application."""
 
     def __init__(self, config_path, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -65,22 +65,22 @@ class Application(web.Application):
     def config(self) -> dict:
         return self._config
 
-    def _search_endpoints(self):
-        # language=rst
-        """ Get the search endpoints from the configuration.
-        """
-
+    def _search_endpoints(self) -> List[downstream.SearchEndpoint]:
+        """ Get the search endpoints from the configuration."""
         endpoints = []
+
         # read default conf
-        search_conf = self.config['global_search_config']
-        connect_timeout = search_conf['connect_timeout']
+        global_config = self.config['global_search_config']
+        connect_timeout = global_config['connect_timeout']
 
         # grab all configured endpoints
         for endpointconf in self.config['search_endpoints']:
+            # Find the class in the module
             endpoint_clz = getattr(downstream, endpointconf['type'])
-            read_timeout = endpointconf.get('read_timeout', search_conf['default_read_timeout'])
-            max_results = endpointconf.get('max_results', search_conf['max_results_per_endpoint'])
+
             url = endpointconf['url']
+            read_timeout = endpointconf.get('read_timeout', global_config['default_read_timeout'])
+            max_results = endpointconf.get('max_results', global_config['max_results_per_endpoint'])
             endpoints.append(
                 endpoint_clz(self, connect_timeout, max_results, url, read_timeout)
             )

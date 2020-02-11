@@ -81,6 +81,7 @@ class DCATAms(SearchEndpoint):
 
 
 class Typeahead(SearchEndpoint):
+    """Endpoint type that performs a typeahead"""
 
     async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
         headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}

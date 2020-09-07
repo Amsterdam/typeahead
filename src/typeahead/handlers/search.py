@@ -10,6 +10,7 @@ async def get(request):
     """
     with metrics.REQUEST_TIME.time():
         q = request.query.get('q', '').strip()
+        label = request.query.get('label')
         min_query_length = request.app.config['global_search_config']['min_query_length']
         authz = request.headers.get('Authorization', None)
         # only perform search for queries longer than min_query_length
@@ -24,6 +25,10 @@ async def get(request):
                 results.extend(result)
 
         results_type = request.app.config['global_search_config'].get('results_type')
+        if results and label:
+            labels = {l.lower() for l in label.split(',')}
+            results = [r for r in results if r['label'].lower() in labels]
+
         if results and results_type and results_type == 'equal_until_max':
             # The result is a list of objects where the 'content' exists of embedded lists of results.
             # From each top level entry we will repeatedly take one item to till we have total_max_results items

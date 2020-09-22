@@ -10,6 +10,12 @@ async def get(request):
     """
     with metrics.REQUEST_TIME.time():
         q = request.query.get('q', '').strip()
+        features = request.query.get('features')
+        if features and features.isdigit():
+            features = int(features)
+        else:
+            features = None
+
         label = request.query.get('label')
         min_query_length = request.app.config['global_search_config']['min_query_length']
         authz = request.headers.get('Authorization', None)
@@ -17,7 +23,7 @@ async def get(request):
         if len(q) < min_query_length:
             return web.json_response([])
         # perform searches
-        searches = [e.wrappedsearch(q, authz) for e in request.app['search_endpoints']]
+        searches = [e.wrappedsearch(q, authz, features) for e in request.app['search_endpoints']]
         # gather responses
         results = []
         for result in await asyncio.gather(*searches, return_exceptions=True):

@@ -47,17 +47,21 @@ class SearchEndpoint:
             _logger.exception('Error querying {}'.format(u))
             raise
 
-    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
+    async def search(self, q: str, authorization_header: T.Optional[str], features:T.Optional[int]) -> T.List[dict]:
         raise NotImplementedError()
 
 
 class DCATAms(SearchEndpoint):
 
-    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
+    async def search(self, q: str, authorization_header: T.Optional[str], features:T.Optional[int]) -> T.List[dict]:
         headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}
+        params = {'q': q, 'limit': self.max_results}
+        if features:
+            params['features'] = features
+
         req = self.session.get(
             self.url, timeout=self.read_timeout, headers=headers,
-            params={'q': q, 'limit': self.max_results}
+            params=params
         )
         async with req as response:
             result = await response.json()
@@ -82,9 +86,13 @@ class DCATAms(SearchEndpoint):
 
 class Typeahead(SearchEndpoint):
 
-    async def search(self, q: str, authorization_header: T.Optional[str]) -> T.List[dict]:
+    async def search(self, q: str, authorization_header: T.Optional[str], features: T.Optional[int]) -> T.List[dict]:
         headers = (authorization_header is not None and {'Authorization': authorization_header}) or {}
-        req = self.session.get(self.url, timeout=self.read_timeout, params={'q': q, 'limit': self.max_results},
+        params = {'q': q, 'limit': self.max_results}
+        if features:
+            params['features'] = features
+
+        req = self.session.get(self.url, timeout=self.read_timeout, params=params,
                           headers=headers)
         results = []
         async with req as response:

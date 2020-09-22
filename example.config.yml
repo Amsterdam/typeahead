@@ -13,19 +13,19 @@ global_search_config:
 
 search_endpoints:
 - type: Typeahead
-  url: https://api.data.amsterdam.nl/atlas/typeahead/bag/
+  url: https://acc.api.data.amsterdam.nl/atlas/typeahead/bag/
 - type: Typeahead
-  url: https://api.data.amsterdam.nl/handelsregister/typeahead/
+  url: https://acc.api.data.amsterdam.nl/handelsregister/typeahead/
 - type: Typeahead
-  url: https://api.data.amsterdam.nl/atlas/typeahead/brk/
+  url: https://acc.api.data.amsterdam.nl/atlas/typeahead/brk/
 - type: Typeahead
-  url: https://api.data.amsterdam.nl/atlas/typeahead/gebieden/
+  url: https://acc.api.data.amsterdam.nl/atlas/typeahead/gebieden/
 - type: Typeahead
-  url: https://api.data.amsterdam.nl/meetbouten/typeahead/
+  url: https://acc.api.data.amsterdam.nl/meetbouten/typeahead/
 - type: DCATAms
   url: https://acc.api.data.amsterdam.nl/dcatd/datasets
 - type: Typeahead
-  url: https://api.data.amsterdam.nl/monumenten/typeahead/
+  url: https://acc.api.data.amsterdam.nl/monumenten/typeahead/
   max_results: 6
 
 logging:

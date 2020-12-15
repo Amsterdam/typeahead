@@ -1,0 +1,85 @@
+web:
+  port: ${PORT:-8080}
+  baseurl: ${WEB_BASE_URL}
+  allow_cors: true
+
+global_search_config:
+  default_read_timeout: 0.3
+  connect_timeout: 0.05
+  min_query_length: 3
+  max_results_per_endpoint: 12
+  results_type: equal_until_max
+  total_max_results: 15
+
+search_endpoints:
+- type: Typeahead
+  url: ${ENDPOINT_BAG}
+- type: Typeahead
+  url: ${ENDPOINT_HANDELSREGISTER}
+- type: Typeahead
+  url: ${ENDPOINT_BRK}
+- type: Typeahead
+  url: ${ENDPOINT_GEBIEDEN}
+- type: Typeahead
+  url: ${ENDPOINT_MEETBOUTEN}
+- type: Typeahead
+  url: ${ENDPOINT_MONUMENTEN}
+- type: Typeahead
+  url: ${ENDPOINT_CMS_SEARCH}
+- type: DCATAms
+  url: ${ENDPOINT_DCATD}
+
+logging:
+  formatters:
+    default:
+      format: '%(asctime)s %(levelname)-8s %(module)s:%(lineno)d: %(message)s'
+  handlers:
+    aiohttp.access:
+      class: logging.StreamHandler
+    console:
+      class: logging.StreamHandler
+      formatter: default
+    gelf:
+      class : graypy.GELFUDPHandler
+      formatter: default
+      host: ${LOGSTASH_HOST}
+      port: ${LOGSTASH_GELF_UDP_PORT}
+  loggers:
+    # See also: <http://aiohttp.readthedocs.io/en/stable/logging.html>
+    aiohttp:
+      propagate: true
+    aiohttp.*:
+      propagate: true
+    aiohttp.access:
+      handlers:
+      - aiohttp.access
+      level: WARNING
+      propagate: false
+    aiohttp_extras:
+      handlers:
+      - console
+      level: WARNING
+      propagate: false
+    config_loader:
+      handlers:
+      - console
+      level: WARNING
+      propagate: false
+    typeahead:
+      handlers:
+      - console
+      - gelf
+      level: WARNING
+      propagate: false
+    typeahead.downstream:
+      handlers:
+      - gelf
+      level: WARNING
+      propagate: false
+  root:
+    handlers:
+    - console
+    - gelf
+    level: WARNING
+  version: 1
+

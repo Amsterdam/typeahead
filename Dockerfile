@@ -1,4 +1,4 @@
-FROM amsterdam/python
+FROM amsterdam/python:3.7-buster
     WORKDIR /root/app
     COPY . /root/app/
     RUN pip install .
